@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  # Databases
+  redis-server:
+    image: "redis:6.2-alpine"
+    restart: always
+    expose:
+      - 6379
+
+  postgres:
+    image: 'postgres:13.5-alpine'
+    environment:
+      - POSTGRES_USER=awms
+      - POSTGRES_PASSWORD=therootpassword
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-postgres:/var/lib/postgresql/data
+
+  awms:
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_USER=awms
+      - DB_PASS=therootpassword
+      - DB_PORT=5432
+      - DB_NAME=awms
+
+      - REDIS_HOST=redis-server
+      - REDIS_PORT=6379
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.node.dev
+    ports:
+      - "3000:3000"
+    restart: on-failure
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: sh -c "/wait && ./node_modules/.bin/nest start --debug --watch --preserveWatchOutput"
