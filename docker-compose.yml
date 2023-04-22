@@ -13,6 +13,7 @@ services:
     environment:
       - POSTGRES_USER=awms
       - POSTGRES_PASSWORD=therootpassword
+      - POSTGRES_DB=awms
     restart: always
     ports:
       - "5432:5432"
