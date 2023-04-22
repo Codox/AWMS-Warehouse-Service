@@ -41,3 +41,6 @@ services:
       - ./:/app
       - /app/node_modules
     command: sh -c "/wait && ./node_modules/.bin/nest start --debug --watch --preserveWatchOutput"
+
+volumes:
+  db-postgres: {}
