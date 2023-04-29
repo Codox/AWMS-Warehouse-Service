@@ -33,6 +33,7 @@
     "i18n-iso-countries": "^7.6.0",
     "libphonenumber-js": "^1.10.28",
     "lodash": "^4.17.21",
+    "nest-keycloak-connect": "^1.9.1",
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
