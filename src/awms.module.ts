@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getAWMSPostgresConnectionSourceOptions } from './ormconfig';
-import { AuthGuard, KeycloakConnectModule } from 'nest-keycloak-connect';
+import {
+  AuthGuard,
+  KeycloakConnectModule,
+  PolicyEnforcementMode,
+  TokenValidation,
+} from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -12,11 +18,14 @@ import { APP_GUARD } from '@nestjs/core';
     KeycloakConnectModule.register({
       authServerUrl: 'http://localhost:8080/',
       realm: 'awms',
-      clientId: 'admin-cli',
-      secret: '',
+      clientId: 'awms-hyperlogic-service-api',
+      secret: '2UTU2KRqYRlKdmC7pZ8TJIep3FPW5kAE',
+      policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
+      tokenValidation: TokenValidation.ONLINE,
     }),
+    // GatewayModule,
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
