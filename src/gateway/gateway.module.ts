@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from '../app.controller';
+import { CompanyController } from './controllers/company.controller';
+import { CompanyModule } from '../company/company.module';
 
 @Module({
-  imports: [],
-  controllers: [],
+  imports: [
+    CompanyModule
+  ],
+  controllers: [
+    CompanyController
+  ],
   providers: [
     // JwtStrategy,
     // APIGuard,
