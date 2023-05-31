@@ -25,9 +25,11 @@ services:
       - DB_USER=awms
       - DB_PASS=therootpassword
       - DB_PORT=5432
+
+      - WAIT_HOSTS=postgres:5432
     volumes:
       - ./local/init-local.sh:/init-local.sh
-    command: /bin/sh /init-local.sh
+    entrypoint: /init-local.sh
     build:
       context: .
       dockerfile: docker/Dockerfile.init.local
