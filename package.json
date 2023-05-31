@@ -6,6 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "migrate:show": "./node_modules/.bin/typeorm-ts-node-commonjs migration:show -d src/ormconfig.ts",
+    "migrate:run": "./node_modules/.bin/typeorm-ts-node-commonjs migration:run -d src/ormconfig.ts",
+
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
