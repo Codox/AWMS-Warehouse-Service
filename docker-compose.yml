@@ -13,12 +13,24 @@ services:
     environment:
       - POSTGRES_USER=awms
       - POSTGRES_PASSWORD=therootpassword
-      - POSTGRES_DB=awms
     restart: always
     ports:
       - "5432:5432"
     volumes:
       - db-postgres:/var/lib/postgresql/data
+
+  init:
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=awms
+      - DB_PASS=therootpassword
+      - DB_PORT=5432
+    volumes:
+      - ./local/init-local.sh:/init-local.sh
+    command: /bin/sh /init-local.sh
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.init.local
 
   awms:
     environment:
@@ -34,6 +46,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.node.local
+    links:
+      - init
     ports:
       - "3001:3000"
     restart: on-failure
