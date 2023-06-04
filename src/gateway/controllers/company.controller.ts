@@ -10,7 +10,7 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CompanyService } from '../../company/company.service';
 import { FilterableData } from '../../shared/filterable-data';
 import { Company } from '../../company/company.entity';
@@ -28,6 +28,20 @@ export class CompanyController {
   @Get('/')
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
+  @ApiTags('company')
+  @ApiQuery({
+    name: 'name',
+    type: String,
+    required: false,
+
+    description: 'Company name',
+  })
+  @ApiQuery({
+    name: 'code',
+    type: String,
+    required: false,
+    description: 'Company code',
+  })
   async getCompanies(
     @Filterable(['name', 'code'])
     filterable: FilterableData,
@@ -40,6 +54,14 @@ export class CompanyController {
   @Get('/:uuid')
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
+  @ApiTags('company')
+  @ApiParam({
+    name: 'uuid',
+    type: String,
+    required: true,
+
+    description: 'Company UUID',
+  })
   async getCompany(@Param('uuid') uuid: string) {
     const company = await this.companyService.getRepository().findOne({
       where: { uuid },
@@ -56,6 +78,7 @@ export class CompanyController {
 
   @Post('/')
   @Roles({ roles: ['realm:super_admin'] })
+  @ApiTags('company')
   @HttpCode(HttpStatus.CREATED)
   async createCompany(@Body() data: CompanyDTO) {
     return {
