@@ -55,6 +55,7 @@ export class CompanyController {
   }
 
   @Post('/')
+  @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.CREATED)
   async createCompany(@Body() data: CompanyDTO) {
     return {
