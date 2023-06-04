@@ -1,6 +1,14 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+  TableIndex,
+} from 'typeorm';
 
-export class CreateWarehouseLocationsTable1685883218756 implements MigrationInterface {
+export class CreateWarehouseLocationsTable1685883218756
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.createTable(
       new Table({
@@ -19,6 +27,11 @@ export class CreateWarehouseLocationsTable1685883218756 implements MigrationInte
             isGenerated: true,
             generationStrategy: 'uuid',
             isUnique: true,
+          },
+          {
+            name: 'warehouse_id',
+            type: 'int',
+            isNullable: false,
           },
           {
             name: 'name',
@@ -58,9 +71,27 @@ export class CreateWarehouseLocationsTable1685883218756 implements MigrationInte
       }),
       true,
     );
+
+    await queryRunner.createForeignKey(
+      'warehouse_locations',
+      new TableForeignKey({
+        columnNames: ['warehouse_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'warehouses',
+        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createIndex(
+      'warehouse_locations',
+      new TableIndex({
+        name: 'idx_warehouse_locations_warehouse_id',
+        columnNames: ['warehouse_id'],
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<any> {
-    await queryRunner.dropTable('locations');
+    await queryRunner.dropTable('warehouse_locations');
   }
 }
