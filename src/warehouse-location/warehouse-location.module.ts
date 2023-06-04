@@ -7,6 +7,6 @@ import { WarehouseLocation } from './warehouse-location.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([WarehouseLocation])],
   providers: [WarehouseLocationService, WarehouseLocationRepository],
-  exports: [],
+  exports: [WarehouseLocationService],
 })
 export class WarehouseLocationModule {}
