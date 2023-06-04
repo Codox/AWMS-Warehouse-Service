@@ -7,7 +7,7 @@ import {
   Validate,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { LocationDTO } from '../../location/dto/location.dto';
+import { LocationDTO } from '../../warehouse-location/dto/location.dto';
 import { IsAlpha2CountryCode } from "../../gateway/validators/is-alpha-2-country-code.validator";
 
 export class CompanyDTO extends Mixin(LocationDTO) {

@@ -11,8 +11,8 @@ import {
 import { BaseEntity } from '../shared/base.entity';
 import { Warehouse } from '../warehouse/warehouse.entity';
 
-@Entity('locations')
-export class Location extends BaseEntity<Location> {
+@Entity('warehouse_locations')
+export class WarehouseLocation extends BaseEntity<WarehouseLocation> {
   @PrimaryGeneratedColumn()
   id: number;
 
