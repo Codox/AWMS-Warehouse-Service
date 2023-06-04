@@ -5,6 +5,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { AWMSModule } from './awms.module';
 import { ValidationPipe } from '@nestjs/common';
+import { DatabaseExceptionFilter } from './shared/filters/database-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -13,6 +14,8 @@ async function bootstrap() {
   );
 
   app.useGlobalPipes(new ValidationPipe());
+
+  app.useGlobalFilters(new DatabaseExceptionFilter());
 
   await app.listen(3000, '0.0.0.0');
 }
