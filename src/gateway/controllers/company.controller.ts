@@ -12,6 +12,7 @@ import { FilterableData } from '../../shared/filterable-data';
 import { Company } from '../../company/company.entity';
 import { BaseResponse } from '../../shared/base.response';
 import { Filterable } from '../../shared/filterable.decorator';
+import { Resource, Roles, Scopes } from 'nest-keycloak-connect';
 
 @Controller('company')
 @ApiTags('company')
@@ -20,6 +21,7 @@ export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
   @Get('/')
+  @Roles({ roles: ['super_admin'] })
   @HttpCode(HttpStatus.OK)
   async getCompanies(
     @Filterable(['forename', 'surname', 'username', 'email', 'mobileTelephone'])
@@ -30,4 +32,3 @@ export class CompanyController {
       .queryWithFilterable(filterable);
   }
 }
-
