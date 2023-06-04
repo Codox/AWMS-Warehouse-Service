@@ -6,12 +6,22 @@ import {
 import { AWMSModule } from './awms.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DatabaseExceptionFilter } from './shared/filters/database-exception.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AWMSModule,
     new FastifyAdapter(),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('AWMS: API')
+    .setDescription('AWMS: API specification')
+    .setVersion('0.1-Alpha')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-spec', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
 
