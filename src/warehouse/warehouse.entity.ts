@@ -7,22 +7,17 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BaseEntity } from '../shared/base.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('warehouses')
 export class Warehouse extends BaseEntity<Warehouse> {
   @PrimaryGeneratedColumn()
+  @Exclude()
   id: number;
 
   @Column({ unique: true })
   @Generated('uuid')
   uuid: string;
-
-  @Column({
-    name: 'company_uuid',
-    nullable: false,
-    type: 'uuid',
-  })
-  companyUuid: string;
 
   @Column()
   name: string;

@@ -5,7 +5,6 @@ import { WarehouseService } from './warehouse.service';
 import { WarehouseRepository } from './warehouse.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Warehouse])],
   providers: [WarehouseService, WarehouseRepository],
   exports: [WarehouseService],
 })
