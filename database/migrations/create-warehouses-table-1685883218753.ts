@@ -41,6 +41,48 @@ export class CreateWarehousesTable1685883218753 implements MigrationInterface {
             isNullable: true,
           },
           {
+            name: 'address_line',
+            type: 'json',
+            isNullable: false,
+          },
+          {
+            name: 'town',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'region',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'city',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'zip_code',
+            type: 'varchar',
+            length: '10',
+            isNullable: false,
+          },
+          {
+            name: 'country',
+            type: 'varchar',
+            isNullable: false,
+            length: '2',
+          },
+          {
+            name: 'latitude',
+            type: 'float',
+            isNullable: true,
+          },
+          {
+            name: 'longitude',
+            type: 'float',
+            isNullable: true,
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',
