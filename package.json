@@ -8,7 +8,6 @@
   "scripts": {
     "migrate:show": "./node_modules/.bin/typeorm-ts-node-commonjs migration:show -d src/ormconfig.ts",
     "migrate:run": "./node_modules/.bin/typeorm-ts-node-commonjs migration:run -d src/ormconfig.ts",
-
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -24,6 +23,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@fastify/static": "^6.10.2",
     "@nestjs/common": "^9.4.0",
     "@nestjs/core": "^9.4.0",
     "@nestjs/passport": "^9.0.3",
