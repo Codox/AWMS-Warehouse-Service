@@ -1,4 +1,5 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
@@ -6,6 +7,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  Post,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -15,6 +17,7 @@ import { Company } from '../../company/company.entity';
 import { BaseResponse } from '../../shared/base.response';
 import { Filterable } from '../../shared/filterable.decorator';
 import { Roles } from 'nest-keycloak-connect';
+import { CompanyDTO } from '../../company/dto/company.dto';
 
 @Controller('company')
 @ApiTags('company')
@@ -48,6 +51,14 @@ export class CompanyController {
 
     return {
       data: company,
+    };
+  }
+
+  @Post('/')
+  @HttpCode(HttpStatus.CREATED)
+  async createCompany(@Body() data: CompanyDTO) {
+    return {
+      data: await this.companyService.createCompany(data),
     };
   }
 }
