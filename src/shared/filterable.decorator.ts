@@ -1,6 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { has, get, forEach, endsWith, split } from 'lodash';
 import { FilterableData } from './filterable-data';
+import { filter } from 'rxjs';
 
 export const Filterable = createParamDecorator(
   (data: string[], ctx: ExecutionContext) => {
@@ -26,6 +27,10 @@ export const Filterable = createParamDecorator(
 
         if (data.includes(field)) {
           filterable.fields.push({ field, value });
+        }
+      } else {
+        if (data.includes(key)) {
+          filterable.fields.push({ field: key, value });
         }
       }
     });
