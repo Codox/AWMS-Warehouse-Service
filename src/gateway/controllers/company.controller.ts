@@ -24,7 +24,7 @@ export class CompanyController {
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
   async getCompanies(
-    @Filterable(['forename', 'surname', 'username', 'email', 'mobileTelephone'])
+    @Filterable(['name', 'code'])
     filterable: FilterableData,
   ): Promise<BaseResponse<Company[]>> {
     return await this.companyService
