@@ -4,6 +4,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
+  Param,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -30,5 +32,22 @@ export class CompanyController {
     return await this.companyService
       .getRepository()
       .queryWithFilterable(filterable);
+  }
+
+  @Get('/:uuid')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.OK)
+  async getCompany(@Param('uuid') uuid: string) {
+    const company = await this.companyService.getRepository().findOne({
+      where: { uuid },
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company ${uuid} not found`);
+    }
+
+    return {
+      data: company,
+    };
   }
 }
