@@ -3,10 +3,12 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpStatus, NotFoundException, Param,
-  UseInterceptors
-} from "@nestjs/common";
-import { ApiParam, ApiTags } from "@nestjs/swagger";
+  HttpStatus,
+  NotFoundException,
+  Param,
+  UseInterceptors,
+} from '@nestjs/common';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { Roles } from 'nest-keycloak-connect';
 import { Filterable } from '../../shared/filterable.decorator';
@@ -41,19 +43,19 @@ export class WarehouseController {
     type: String,
     required: true,
 
-    description: 'Company UUID',
+    description: 'Warehouse UUID',
   })
   async getWarehouse(@Param('uuid') uuid: string) {
-    const company = await this.warehouseService.getRepository().findOne({
+    const warehouse = await this.warehouseService.getRepository().findOne({
       where: { uuid },
     });
 
-    if (!company) {
-      throw new NotFoundException(`Company ${uuid} not found`);
+    if (!warehouse) {
+      throw new NotFoundException(`Warehouse ${uuid} not found`);
     }
 
     return {
-      data: company,
+      data: warehouse,
     };
   }
 }
