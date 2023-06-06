@@ -3,10 +3,10 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpStatus,
-  UseInterceptors,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+  HttpStatus, NotFoundException, Param,
+  UseInterceptors
+} from "@nestjs/common";
+import { ApiParam, ApiTags } from "@nestjs/swagger";
 import { WarehouseService } from '../../warehouse/warehouse.service';
 import { Roles } from 'nest-keycloak-connect';
 import { Filterable } from '../../shared/filterable.decorator';
@@ -30,5 +30,30 @@ export class WarehouseController {
     return await this.warehouseService
       .getRepository()
       .queryWithFilterable(filterable);
+  }
+
+  @Get('/:uuid')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.OK)
+  @ApiTags('warehouse')
+  @ApiParam({
+    name: 'uuid',
+    type: String,
+    required: true,
+
+    description: 'Company UUID',
+  })
+  async getWarehouse(@Param('uuid') uuid: string) {
+    const company = await this.warehouseService.getRepository().findOne({
+      where: { uuid },
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company ${uuid} not found`);
+    }
+
+    return {
+      data: company,
+    };
   }
 }
