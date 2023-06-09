@@ -31,12 +31,8 @@ export class CompanyService extends BaseService<Company> {
 
     let company = new Company(data);
 
-    const phoneNumber = parsePhoneNumber(
-      data.contactTelephone,
-      data.contactTelephoneCountryCode as CountryCode,
-    );
-
-    company.contactTelephone = phoneNumber.number.toString();
+    const phoneNumber = parsePhoneNumber(data.contactTelephone);
+    company.contactTelephone = phoneNumber.number;
 
     company = await this.companyRepository.save(company);
 

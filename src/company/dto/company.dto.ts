@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationDTO } from '../../warehouse-location/dto/location.dto';
-import { IsAlpha2CountryCode } from "../../gateway/validators/is-alpha-2-country-code.validator";
 
 export class CompanyDTO extends Mixin(LocationDTO) {
   @IsString()
@@ -32,16 +31,6 @@ export class CompanyDTO extends Mixin(LocationDTO) {
     maximum: 10,
   })
   code: string;
-
-  @IsString()
-  @Validate(IsAlpha2CountryCode)
-  @MaxLength(2)
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'The telephone country code in ISO 3166 ALPHA-2 format',
-    maximum: 2,
-  })
-  contactTelephoneCountryCode: string;
 
   @IsString()
   @IsNotEmpty()
