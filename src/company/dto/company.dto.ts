@@ -1,11 +1,5 @@
 import { Mixin } from 'ts-mixer';
-import {
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-  Validate,
-} from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationDTO } from '../../warehouse-location/dto/location.dto';
 
