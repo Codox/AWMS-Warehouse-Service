@@ -77,12 +77,13 @@ export class WarehouseController {
   ): Promise<{ data: Warehouse }> {
     const warehouse = await this.warehouseService.createWarehouse(data);
 
-    this.eventEmitter.emit('warehouse.created', {
-      payload: new WarehouseCreatedEvent({
+    this.eventEmitter.emit(
+      'warehouse.created',
+      new WarehouseCreatedEvent({
         warehouseUuid: warehouse.uuid,
         userId: user.sub,
       }),
-    });
+    );
 
     return {
       data: warehouse,
