@@ -30,7 +30,7 @@ export class CreateWarehousesTable1685883218753 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'address_line',
+            name: 'address_lines',
             type: 'json',
             isNullable: false,
           },
