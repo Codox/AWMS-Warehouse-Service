@@ -3,6 +3,7 @@ import { BaseService } from '../shared/base.service';
 import { WarehouseRepository } from './warehouse.repository';
 import { Warehouse } from './warehouse.entity';
 import { WarehouseDTO } from './warehouse.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class WarehouseService extends BaseService<Warehouse> {
