@@ -1,29 +1,36 @@
-import { Column } from "typeorm";
+import { Column } from 'typeorm';
+import { decorate } from 'ts-mixer';
 
 export class Location {
-  @Column({
-    name: 'address_lines',
-    type: 'json',
-  })
+  @decorate(
+    Column({
+      name: 'address_lines',
+      type: 'json',
+    }),
+  )
   addressLines: string[];
 
-  @Column()
+  @decorate(Column())
   town: string;
 
-  @Column()
+  @decorate(Column())
   region: string;
 
-  @Column()
+  @decorate(Column())
   city: string;
 
-  @Column({
-    name: 'zip_code',
-    length: 10,
-  })
+  @decorate(
+    Column({
+      name: 'zip_code',
+      length: 10,
+    }),
+  )
   zipCode: string;
 
-  @Column({
-    length: 2,
-  })
+  @decorate(
+    Column({
+      length: 2,
+    }),
+  )
   country: string;
 }
