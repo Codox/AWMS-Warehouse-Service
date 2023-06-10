@@ -1,4 +1,5 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
@@ -6,6 +7,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  Post,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
@@ -15,6 +17,7 @@ import { Filterable } from '../../shared/filterable.decorator';
 import { FilterableData } from '../../shared/filterable-data';
 import { BaseResponse } from '../../shared/base.response';
 import { Warehouse } from '../../warehouse/warehouse.entity';
+import { WarehouseDTO } from '../../warehouse/warehouse.dto';
 
 @Controller('warehouse')
 @ApiTags('warehouse')
@@ -56,6 +59,17 @@ export class WarehouseController {
 
     return {
       data: warehouse,
+    };
+  }
+
+  @Post('/')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.CREATED)
+  async createWarehouse(
+    @Body() data: WarehouseDTO,
+  ): Promise<{ data: Warehouse }> {
+    return {
+      data: await this.warehouseService.createWarehouse(data),
     };
   }
 }

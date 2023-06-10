@@ -1,10 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableForeignKey,
-  TableIndex,
-} from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateWarehousesTable1685883218753 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
@@ -27,11 +21,6 @@ export class CreateWarehousesTable1685883218753 implements MigrationInterface {
             isUnique: true,
           },
           {
-            name: 'company_id',
-            type: 'int',
-            isNullable: false,
-          },
-          {
             name: 'name',
             type: 'varchar',
           },
@@ -41,7 +30,7 @@ export class CreateWarehousesTable1685883218753 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'address_line',
+            name: 'address_lines',
             type: 'json',
             isNullable: false,
           },
@@ -95,24 +84,6 @@ export class CreateWarehousesTable1685883218753 implements MigrationInterface {
         ],
       }),
       true,
-    );
-
-    await queryRunner.createForeignKey(
-      'warehouses',
-      new TableForeignKey({
-        columnNames: ['company_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'companies',
-        onDelete: 'CASCADE',
-      }),
-    );
-
-    await queryRunner.createIndex(
-      'warehouses',
-      new TableIndex({
-        name: 'idx_warehouses_company_id',
-        columnNames: ['company_id'],
-      }),
     );
   }
 
