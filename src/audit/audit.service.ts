@@ -13,5 +13,9 @@ export class AuditService extends BaseService<Audit> {
     return this.auditRepository;
   }
 
-  
+  async createAuditEntry(data: Partial<Audit>): Promise<Audit> {
+    const audit = new Audit(data);
+
+    return await this.auditRepository.save(audit);
+  }
 }
