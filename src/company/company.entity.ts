@@ -8,9 +8,11 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '../shared/base.entity';
 import { Exclude } from 'class-transformer';
+import { Mixin } from 'ts-mixer';
+import { Location } from '../shared/location.entity';
 
 @Entity('companies')
-export class Company extends BaseEntity<Company> {
+export class Company extends Mixin(BaseEntity, Location) {
   @PrimaryGeneratedColumn()
   @Exclude()
   id: number;
