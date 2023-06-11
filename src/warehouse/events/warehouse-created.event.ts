@@ -1,13 +1,13 @@
 import { CreatedEvent } from '../../shared/created.event';
 
 export class WarehouseCreatedEvent extends CreatedEvent {
-  private readonly warehouseUuid: string;
-  private readonly userId: string;
+  public readonly warehouseUuid: string;
+  public readonly userUuid: string;
 
-  constructor(data: { warehouseUuid: string; userId: string }) {
+  constructor(data: { warehouseUuid: string; userUuid: string }) {
     super();
 
     this.warehouseUuid = data.warehouseUuid;
-    this.userId = data.userId;
+    this.userUuid = data.userUuid;
   }
 }

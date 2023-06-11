@@ -81,7 +81,7 @@ export class WarehouseController {
       'warehouse.created',
       new WarehouseCreatedEvent({
         warehouseUuid: warehouse.uuid,
-        userId: user.sub,
+        userUuid: user.sub,
       }),
     );
 

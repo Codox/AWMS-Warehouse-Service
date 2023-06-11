@@ -1,3 +1,4 @@
 export class CreatedEvent {
-  private readonly type: string = 'created';
+  public readonly type: string = 'created';
+  public readonly createdAt: Date = new Date();
 }

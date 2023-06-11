@@ -8,11 +8,6 @@ import { AuditModule } from '../audit/audit.module';
 @Module({
   imports: [CompanyModule, WarehouseModule, AuditModule],
   controllers: [CompanyController, WarehouseController],
-  providers: [
-    // JwtStrategy,
-    // APIGuard,
-    // MQService,
-    // MicroserviceExceptionGatewayFilter,
-  ],
+  providers: [],
 })
 export class GatewayModule {}
