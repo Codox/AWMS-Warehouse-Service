@@ -35,10 +35,12 @@ export class CreateAuditTable1686431648922 implements MigrationInterface {
           {
             name: 'old_data',
             type: 'jsonb',
+            isNullable: true,
           },
           {
             name: 'new_data',
             type: 'jsonb',
+            isNullable: true,
           },
           {
             name: 'user_uuid',
