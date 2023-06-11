@@ -4,11 +4,15 @@ import { WarehouseCreatedEvent } from '../warehouse/events/warehouse-created.eve
 import { WarehouseService } from '../warehouse/warehouse.service';
 import { AuditService } from './audit.service';
 import { Warehouse } from '../warehouse/warehouse.entity';
+import { CompanyCreatedEvent } from "../company/events/company-created.event";
+import { CompanyService } from "../company/company.service";
+import { Company } from "../company/company.entity";
 
 @Injectable()
 export class AuditListener {
   constructor(
     private readonly warehouseService: WarehouseService,
+    private readonly companyService: CompanyService,
     private readonly auditService: AuditService,
   ) {}
 
@@ -24,6 +28,23 @@ export class AuditListener {
       action: data.type,
       oldData: null,
       newData: warehouse,
+      userUuid: data.userUuid,
+      timestamp: data.createdAt,
+    });
+  }
+
+  @OnEvent('company.created', { async: true })
+  async handleCompanyCreatedEvent(data: CompanyCreatedEvent) {
+    const company: Company = await this.companyService.getOne(
+      data.companyUuid,
+    );
+
+    await this.auditService.createAuditEntry({
+      recordId: company.id,
+      type: Company.name,
+      action: data.type,
+      oldData: null,
+      newData: company,
       userUuid: data.userUuid,
       timestamp: data.createdAt,
     });

@@ -3,9 +3,10 @@ import { AuditListener } from './audit.listener';
 import { AuditRepository } from './audit.repository';
 import { AuditService } from './audit.service';
 import { WarehouseModule } from '../warehouse/warehouse.module';
+import { CompanyModule } from '../company/company.module';
 
 @Module({
-  imports: [WarehouseModule],
+  imports: [WarehouseModule, CompanyModule],
   providers: [AuditListener, AuditRepository, AuditService],
   exports: [AuditService],
 })

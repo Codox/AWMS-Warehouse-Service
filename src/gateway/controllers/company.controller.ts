@@ -16,14 +16,20 @@ import { FilterableData } from '../../shared/filterable-data';
 import { Company } from '../../company/company.entity';
 import { BaseResponse } from '../../shared/base.response';
 import { Filterable } from '../../shared/filterable.decorator';
-import { Roles } from 'nest-keycloak-connect';
+import { AuthenticatedUser, Roles } from 'nest-keycloak-connect';
 import { CompanyDTO } from '../../company/dto/company.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CompanyCreatedEvent } from '../../company/events/company-created.event';
+import { KeycloakUser } from '../../user/keycloak-user';
 
 @Controller('company')
 @ApiTags('company')
 @UseInterceptors(ClassSerializerInterceptor)
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly companyService: CompanyService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @Get('/')
   @Roles({ roles: ['realm:super_admin'] })
@@ -80,9 +86,22 @@ export class CompanyController {
   @Roles({ roles: ['realm:super_admin'] })
   @ApiTags('company')
   @HttpCode(HttpStatus.CREATED)
-  async createCompany(@Body() data: CompanyDTO) {
+  async createCompany(
+    @Body() data: CompanyDTO,
+    @AuthenticatedUser() user: KeycloakUser,
+  ) {
+    const company: Company = await this.companyService.createCompany(data);
+
+    this.eventEmitter.emit(
+      'company.created',
+      new CompanyCreatedEvent({
+        companyUuid: company.uuid,
+        userUuid: user.sub,
+      }),
+    );
+
     return {
-      data: await this.companyService.createCompany(data),
+      data: company,
     };
   }
 }
