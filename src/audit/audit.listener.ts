@@ -4,8 +4,8 @@ import { WarehouseCreatedEvent } from '../warehouse/events/warehouse-created.eve
 
 @Injectable()
 export class AuditListener {
-  @OnEvent('warehouse.created')
-  handleWarehouseCreatedEvent(data: WarehouseCreatedEvent) {
-    console.log('Warehouse created event received', data);
+  @OnEvent('warehouse.created', { async: true })
+  async handleWarehouseCreatedEvent(data: WarehouseCreatedEvent) {
+
   }
 }
