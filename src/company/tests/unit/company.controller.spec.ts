@@ -20,6 +20,7 @@ describe('CompanyController', () => {
           provide: CompanyRepository,
           useValue: {
             queryWithFilterable: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -78,6 +79,40 @@ describe('CompanyController', () => {
     expect(
       companyService.getRepository().queryWithFilterable,
     ).toHaveBeenCalledWith(filterableData);
+  });
+
+  it('GET /company/:uuid should resolve correctly', async () => {
+    const company = new Company({
+      uuid: faker.string.uuid(),
+      name: faker.company.name(),
+      code: faker.company.name().slice(0, 3).toUpperCase(),
+      description: faker.lorem.paragraph(),
+      vatNumber: faker.finance.accountNumber(),
+      eoriNumber: faker.finance.accountNumber(),
+      contactTelephone: faker.phone.number('+44##########'),
+
+      addressLines: [faker.location.streetAddress({ useFullAddress: true })],
+      town: faker.location.city(),
+      region: faker.location.state(),
+      city: faker.location.city(),
+      zipCode: faker.location.zipCode(),
+      country: faker.location.countryCode(),
+    });
+
+    const baseResponse = {
+      data: company,
+    };
+
+    jest
+      .spyOn(companyService.getRepository(), 'findOne')
+      .mockImplementation(async () => company);
+
+    const result = await controller.getCompany(company.uuid);
+
+    expect(result).toEqual(baseResponse);
+    expect(companyService.getRepository().findOne).toHaveBeenCalledWith({
+      where: { uuid: company.uuid },
+    });
   });
 });
 
