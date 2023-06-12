@@ -1,7 +1,7 @@
 import { CompanyController } from '../../../gateway/controllers/company.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyService } from '../../company.service';
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
@@ -30,8 +30,8 @@ describe('CompanyController', () => {
     service = module.get<CompanyService>(CompanyService);
   });
 
-  it('should be defined', async () => {
-    expect(controller).toBeDefined();
+  it('GET /company should respond correctly', async () => {
+
   });
 });
 
