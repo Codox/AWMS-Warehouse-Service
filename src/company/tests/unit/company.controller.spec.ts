@@ -36,7 +36,7 @@ describe('CompanyController', () => {
     companyService = module.get<CompanyService>(CompanyService);
   });
 
-  it('GET /company should resolve correctly', async () => {
+  it('GET /company should resolve correctly - 200', async () => {
     const mockCompanies: Company[] = [
       new Company({
         uuid: faker.string.uuid(),
@@ -81,7 +81,7 @@ describe('CompanyController', () => {
     ).toHaveBeenCalledWith(filterableData);
   });
 
-  it('GET /company/:uuid should resolve correctly', async () => {
+  it('GET /company/:uuid should resolve correctly - 200', async () => {
     const company = new Company({
       uuid: faker.string.uuid(),
       name: faker.company.name(),
@@ -112,6 +112,21 @@ describe('CompanyController', () => {
     expect(result).toEqual(baseResponse);
     expect(companyService.getRepository().findOne).toHaveBeenCalledWith({
       where: { uuid: company.uuid },
+    });
+  });
+
+  it('GET /company/:uuid should not resolve (Not found) - 404', async () => {
+    const uuid = faker.string.uuid();
+
+    jest
+      .spyOn(companyService.getRepository(), 'findOne')
+      .mockImplementation(async () => undefined);
+
+    await expect(controller.getCompany(uuid)).rejects.toThrow(
+      `Company ${uuid} not found`,
+    );
+    expect(companyService.getRepository().findOne).toHaveBeenCalledWith({
+      where: { uuid },
     });
   });
 });
