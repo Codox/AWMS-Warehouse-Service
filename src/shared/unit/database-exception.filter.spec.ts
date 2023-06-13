@@ -44,10 +44,9 @@ describe('DatabaseExceptionFilter', () => {
       const exception: any = {};
       exception.code = 'XYZ123';
 
-      const responseMock = {
-        status: jest.fn().mockReturnValue({
-          send: jest.fn(),
-        }),
+      const responseMock: any = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
       };
 
       const hostMock: Partial<ArgumentsHost> = {
@@ -62,10 +61,10 @@ describe('DatabaseExceptionFilter', () => {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
 
-      /*expect(responseMock.status.send).toHaveBeenCalledWith({
+      expect(responseMock.send).toHaveBeenCalledWith({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         error: 'Internal Server Error',
-      });*/
+      });
     });
   });
 });

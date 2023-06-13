@@ -21,10 +21,6 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
     let status = HttpStatus.BAD_REQUEST;
 
     if (this.POSTGRES_ERRORS[errorCode]) {
-      console.log(
-        'this.POSTGRES_ERRORS[errorCode].message',
-        this.POSTGRES_ERRORS[errorCode].message,
-      );
       const error = this.POSTGRES_ERRORS[errorCode].message;
 
       response.status(status).send({
