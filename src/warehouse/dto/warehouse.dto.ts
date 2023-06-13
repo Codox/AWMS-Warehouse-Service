@@ -1,4 +1,4 @@
-import { LocationDTO } from '../warehouse-location/dto/location.dto';
+import { LocationDTO } from '../../warehouse-location/dto/location.dto';
 import { Mixin } from 'ts-mixer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';

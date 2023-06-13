@@ -17,7 +17,7 @@ import { Filterable } from '../../shared/filterable.decorator';
 import { FilterableData } from '../../shared/filterable-data';
 import { BaseResponse } from '../../shared/base.response';
 import { Warehouse } from '../../warehouse/warehouse.entity';
-import { WarehouseDTO } from '../../warehouse/warehouse.dto';
+import { WarehouseDTO } from '../../warehouse/dto/warehouse.dto';
 import { KeycloakUser } from '../../user/keycloak-user';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { WarehouseCreatedEvent } from '../../warehouse/events/warehouse-created.event';

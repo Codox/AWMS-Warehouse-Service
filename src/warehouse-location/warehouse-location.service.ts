@@ -10,8 +10,4 @@ export class WarehouseLocationService extends BaseService<WarehouseLocation> {
   ) {
     super(locationRepository);
   }
-
-  getRepository() {
-    return this.locationRepository;
-  }
 }
