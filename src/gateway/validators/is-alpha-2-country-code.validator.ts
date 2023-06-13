@@ -12,6 +12,6 @@ export class IsAlpha2CountryCode {
   }
 
   defaultMessage() {
-    return 'Country is invalid. Country must an ISO 3166-1 alpha-2 code';
+    return 'Country is invalid. Country must be an ISO 3166-1 alpha-2 code';
   }
 }
