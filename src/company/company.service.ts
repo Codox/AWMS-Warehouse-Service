@@ -3,7 +3,7 @@ import { BaseService } from '../shared/base.service';
 import { CompanyRepository } from './company.repository';
 import { Company } from './company.entity';
 import { CompanyDTO } from './dto/company.dto';
-import { CountryCode, parsePhoneNumber } from 'libphonenumber-js';
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 @Injectable()
 export class CompanyService extends BaseService<Company> {
