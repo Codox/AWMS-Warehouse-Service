@@ -3,11 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyService } from '../../company.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Company } from '../../company.entity';
-import { fa, faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { FilterableData } from '../../../shared/filterable-data';
 import { CompanyRepository } from '../../company.repository';
 import { KeycloakUser } from '../../../user/keycloak-user';
-import { CompanyCreatedEvent } from '../../events/company-created.event';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
