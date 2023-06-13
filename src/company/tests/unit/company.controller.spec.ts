@@ -3,13 +3,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyService } from '../../company.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Company } from '../../company.entity';
-import { faker } from '@faker-js/faker';
+import { fa, faker } from '@faker-js/faker';
 import { FilterableData } from '../../../shared/filterable-data';
 import { CompanyRepository } from '../../company.repository';
+import { KeycloakUser } from '../../../user/keycloak-user';
+import { CompanyCreatedEvent } from '../../events/company-created.event';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
   let companyService: CompanyService;
+  let eventEmitter: EventEmitter2;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -34,6 +37,7 @@ describe('CompanyController', () => {
 
     controller = module.get<CompanyController>(CompanyController);
     companyService = module.get<CompanyService>(CompanyService);
+    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
   });
 
   it('GET /company should resolve correctly - 200', async () => {
@@ -129,23 +133,47 @@ describe('CompanyController', () => {
       where: { uuid },
     });
   });
-});
 
-/*
-describe('MyController', () => {
-  let controller: MyController;
-  let service: MyService;
+  it('POST /company should resolve correctly - 201', async () => {
+    const company = new Company({
+      uuid: faker.string.uuid(),
+      name: faker.company.name(),
+      code: faker.company.name().slice(0, 3).toUpperCase(),
+      description: faker.lorem.paragraph(),
+      vatNumber: faker.finance.accountNumber(),
+      eoriNumber: faker.finance.accountNumber(),
+      contactTelephone: faker.phone.number('+44##########'),
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [MyController],
-      providers: [MyService],
-    }).compile();
+      addressLines: [faker.location.streetAddress({ useFullAddress: true })],
+      town: faker.location.city(),
+      region: faker.location.state(),
+      city: faker.location.city(),
+      zipCode: faker.location.zipCode(),
+      country: faker.location.countryCode(),
+    });
 
-    controller = module.get<MyController>(MyController);
-    service = module.get<MyService>(MyService);
+    const user: KeycloakUser = {
+      sub: faker.string.uuid(),
+      email: faker.internet.email(),
+    };
+
+    const baseResponse = {
+      data: company,
+    };
+
+    jest
+      .spyOn(companyService, 'createCompany')
+      .mockImplementation(async () => company);
+
+    const result = await controller.createCompany(company, user);
+
+    expect(result).toEqual(baseResponse);
+    expect(eventEmitter.emit).toHaveBeenCalledWith(
+      'company.created',
+      expect.objectContaining({
+        companyUuid: company.uuid,
+        userUuid: user.sub,
+      }),
+    );
   });
-
-  // Tests will go here
 });
-*/
