@@ -53,7 +53,7 @@ describe('AuditListener', () => {
   });
 
   describe('handleWarehouseCreatedEvent', () => {
-    it('should create an audit entry when a warehouse is created', async () => {
+    it('Should create an audit entry when a warehouse is created', async () => {
       const warehouseCreatedEvent: WarehouseCreatedEvent = {
         warehouseUuid: faker.string.uuid(),
         type: 'create',
@@ -83,7 +83,7 @@ describe('AuditListener', () => {
   });
 
   describe('handleCompanyCreatedEvent', () => {
-    it('should create an audit entry when a company is created', async () => {
+    it('Should create an audit entry when a company is created', async () => {
       const companyCreatedEvent: CompanyCreatedEvent = {
         companyUuid: faker.string.uuid(),
         type: 'create',
