@@ -28,7 +28,7 @@ describe('WarehouseService', () => {
   });
 
   describe('createWarehouse', () => {
-    it('should create a new warehouse', async () => {
+    it('Should create a new warehouse', async () => {
       const warehouseData: WarehouseDTO = {
         name: faker.company.name(),
         contactTelephone: faker.phone.number('+44##########'),
