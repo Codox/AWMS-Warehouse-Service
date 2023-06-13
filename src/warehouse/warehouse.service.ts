@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseService } from '../shared/base.service';
 import { WarehouseRepository } from './warehouse.repository';
 import { Warehouse } from './warehouse.entity';
-import { WarehouseDTO } from './warehouse.dto';
+import { WarehouseDTO } from './dto/warehouse.dto';
 
 @Injectable()
 export class WarehouseService extends BaseService<Warehouse> {

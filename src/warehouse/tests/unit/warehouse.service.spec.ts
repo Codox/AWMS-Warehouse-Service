@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { WarehouseService } from '../../warehouse.service';
 import { WarehouseRepository } from '../../warehouse.repository';
-import { WarehouseDTO } from '../../warehouse.dto';
+import { WarehouseDTO } from '../../dto/warehouse.dto';
 import { faker } from '@faker-js/faker';
 import { Warehouse } from '../../warehouse.entity';
 
