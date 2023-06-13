@@ -9,10 +9,6 @@ export class AuditService extends BaseService<Audit> {
     super(auditRepository);
   }
 
-  getRepository() {
-    return this.auditRepository;
-  }
-
   async createAuditEntry(data: Partial<Audit>): Promise<Audit> {
     const audit = new Audit(data);
 

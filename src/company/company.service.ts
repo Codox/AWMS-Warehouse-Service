@@ -11,10 +11,6 @@ export class CompanyService extends BaseService<Company> {
     super(companyRepository);
   }
 
-  getRepository() {
-    return this.companyRepository;
-  }
-
   async createCompany(data: CompanyDTO): Promise<Company> {
     // TODO - Add this check as a decorator at some point
     const existingCompany = await this.getRepository().findOne({

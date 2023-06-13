@@ -11,10 +11,6 @@ export class WarehouseService extends BaseService<Warehouse> {
     super(warehouseRepository);
   }
 
-  getRepository() {
-    return this.warehouseRepository;
-  }
-
   async createWarehouse(data: WarehouseDTO): Promise<Warehouse> {
     let warehouse = new Warehouse(data);
 
