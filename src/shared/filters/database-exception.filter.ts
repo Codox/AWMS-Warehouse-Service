@@ -14,13 +14,17 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
     },
   };
 
-  catch(exception, host: ArgumentsHost) {
+  catch(exception, host: ArgumentsHost | Partial<ArgumentsHost>) {
     const errorCode = exception.code;
 
     const response = host.switchToHttp().getResponse();
-    const status = 400;
+    let status = HttpStatus.BAD_REQUEST;
 
     if (this.POSTGRES_ERRORS[errorCode]) {
+      console.log(
+        'this.POSTGRES_ERRORS[errorCode].message',
+        this.POSTGRES_ERRORS[errorCode].message,
+      );
       const error = this.POSTGRES_ERRORS[errorCode].message;
 
       response.status(status).send({
@@ -31,6 +35,7 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
       return;
     }
 
+    status = HttpStatus.INTERNAL_SERVER_ERROR;
     response.status(status).send({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       error: 'Internal Server Error',
