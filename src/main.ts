@@ -9,9 +9,16 @@ import { DatabaseExceptionFilter } from './shared/filters/database-exception.fil
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
+  const fastifyAdapter = new FastifyAdapter();
+
+  fastifyAdapter.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  });
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AWMSModule,
-    new FastifyAdapter(),
+    fastifyAdapter,
   );
 
   const config = new DocumentBuilder()
