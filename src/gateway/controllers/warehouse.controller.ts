@@ -35,7 +35,18 @@ export class WarehouseController {
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
   async getWarehouses(
-    @Filterable(['name'])
+    @Filterable([
+      {
+        field: 'name',
+      },
+      {
+        field: 'contactTelephone',
+      },
+      {
+        field: 'addressLines',
+        type: 'array',
+      },
+    ])
     filterable: FilterableData,
   ): Promise<BaseResponse<Warehouse[]>> {
     return await this.warehouseService

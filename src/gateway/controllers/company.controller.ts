@@ -49,7 +49,14 @@ export class CompanyController {
     description: 'Company code',
   })
   async getCompanies(
-    @Filterable(['name', 'code'])
+    @Filterable([
+      {
+        field: 'name',
+      },
+      {
+        field: 'code',
+      },
+    ])
     filterable: FilterableData,
   ): Promise<BaseResponse<Company[]>> {
     return await this.companyService

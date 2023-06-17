@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { has, get, forEach, endsWith, split } from 'lodash';
-import { FilterableData } from './filterable-data';
+import { FilterableData, FilterableField } from './filterable-data';
 
 export const Filterable = createParamDecorator(
-  (data: string[], ctx: ExecutionContext) => {
+  (data: FilterableField[], ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
     const rawQueryData = request.query;
