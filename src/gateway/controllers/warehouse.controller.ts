@@ -48,6 +48,14 @@ export class WarehouseController {
         field: 'addressLines',
         type: 'array',
       },
+      {
+        field: 'zipCode',
+        type: 'string',
+      },
+      {
+        field: 'country',
+        type: 'string',
+      },
     ])
     filterable: FilterableData,
   ): Promise<BaseResponse<Warehouse[]>> {
