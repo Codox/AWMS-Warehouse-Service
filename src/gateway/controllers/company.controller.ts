@@ -52,9 +52,11 @@ export class CompanyController {
     @Filterable([
       {
         field: 'name',
+        type: 'string',
       },
       {
         field: 'code',
+        type: 'string',
       },
     ])
     filterable: FilterableData,

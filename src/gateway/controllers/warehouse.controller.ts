@@ -38,9 +38,11 @@ export class WarehouseController {
     @Filterable([
       {
         field: 'name',
+        type: 'string',
       },
       {
         field: 'contactTelephone',
+        type: 'string',
       },
       {
         field: 'addressLines',
