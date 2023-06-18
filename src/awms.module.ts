@@ -24,13 +24,20 @@ import { AppController } from './app.controller';
       tokenValidation: TokenValidation.ONLINE,
     }),
     // GatewayModule,
+    GatewayModule,
+    EventEmitterModule.forRoot(),
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard,
+    },
+    DatabaseExceptionFilter,
   ],
 })
 export class AWMSModule {}
