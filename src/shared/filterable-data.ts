@@ -1,3 +1,8 @@
+export class FilterableField {
+  field: string;
+  type: 'string' | 'array' | 'number';
+}
+
 export class FilterableData {
   sort?: string;
   order?: string;
@@ -9,4 +14,5 @@ export class FilterableData {
 export class FilterableDataField {
   field: string;
   value: string | number;
+  type: string;
 }

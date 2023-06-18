@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { has, get, forEach, endsWith, split } from 'lodash';
-import { FilterableData } from './filterable-data';
+import { has, get, forEach, endsWith, split, find } from 'lodash';
+import { FilterableData, FilterableField } from './filterable-data';
 
 export const Filterable = createParamDecorator(
-  (data: string[], ctx: ExecutionContext) => {
+  (data: FilterableField[], ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
 
     const rawQueryData = request.query;
@@ -21,16 +21,21 @@ export const Filterable = createParamDecorator(
     }
 
     forEach(rawQueryData, function (value, key) {
+      let field = null;
       if (endsWith(key, '_like')) {
-        const field = split(key, '_')[0];
-
-        if (data.includes(field)) {
-          filterable.fields.push({ field, value });
-        }
+        field = split(key, '_')[0];
       } else {
-        if (data.includes(key)) {
-          filterable.fields.push({ field: key, value });
-        }
+        field = key;
+      }
+
+      const existingField = find(data, { field });
+
+      if (existingField) {
+        filterable.fields.push({
+          field: existingField.field,
+          value,
+          type: existingField.type,
+        });
       }
     });
 

@@ -1,7 +1,8 @@
-import { FindManyOptions, ILike, Repository } from 'typeorm';
+import { Equal, FindManyOptions, ILike, Raw, Repository } from 'typeorm';
 import { FilterableData } from './filterable-data';
 import { forEach } from 'lodash';
 import { Injectable } from '@nestjs/common';
+import { snakeCase } from 'typeorm/util/StringUtils';
 
 @Injectable()
 export class BaseRepository<T> extends Repository<T> {
@@ -20,7 +21,23 @@ export class BaseRepository<T> extends Repository<T> {
     if (filterable.fields && filterable.fields.length !== 0) {
       const whereOptions = options ? options.where : {};
       forEach(filterable.fields, (value) => {
-        whereOptions[value.field] = ILike(`%${value.value}%`);
+        console.log(value);
+        switch (value.type) {
+          case 'string':
+            whereOptions[value.field] = ILike(`%${value.value}%`);
+            break;
+          case 'array':
+            const columnNameSnakeCase = snakeCase(value.field);
+            whereOptions[value.field] = Raw(
+              () => `"${columnNameSnakeCase}"::text ILIKE :likeValue`,
+              {
+                value: value.value,
+                likeValue: `%${value.value}%`,
+              },
+            );
+
+            break;
+        }
       });
 
       addedFindOptions.where = whereOptions;
