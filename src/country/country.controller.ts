@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import * as countryInformation from 'countries-list';
-import { orderBy, find, has, get, findKey, toLower } from 'lodash';
+import { orderBy, has, get, findKey, toLower } from 'lodash';
 
 @Controller('country')
 @ApiTags('country')
