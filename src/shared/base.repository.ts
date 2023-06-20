@@ -26,6 +26,9 @@ export class BaseRepository<T> extends Repository<T> {
           case 'string':
             whereOptions[value.field] = ILike(`%${value.value}%`);
             break;
+          case 'number':
+            whereOptions[value.field] = Equal(value.value);
+            break;
           case 'array':
             const columnNameSnakeCase = snakeCase(value.field);
             whereOptions[value.field] = Raw(
