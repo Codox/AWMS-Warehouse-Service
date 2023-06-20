@@ -1,4 +1,5 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { PriorityStatus } from "./priority-status/priority-status.entity";
 
 export const AppDataSource = new DataSource(
   getAWMSPostgresConnectionSourceOptions(true),
@@ -17,6 +18,7 @@ export function getAWMSPostgresConnectionSourceOptions(
     migrationsTableName: 'migrations',
     synchronize: false,
     logger: 'advanced-console',
+    entities: [PriorityStatus],
   };
 
   if (withMigrations) options['migrations'] = ['database/migrations/*.ts'];
