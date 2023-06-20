@@ -4,9 +4,11 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
+  Param,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PriorityStatusService } from './priority-status.service';
 import { Roles } from 'nest-keycloak-connect';
 import { Filterable } from '../shared/filterable.decorator';
@@ -53,5 +55,31 @@ export class PriorityStatusController {
     return await this.priorityStatusService
       .getRepository()
       .queryWithFilterable(filterable);
+  }
+
+  @Get('/:uuid')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'uuid',
+    type: String,
+    required: true,
+
+    description: 'Priority Status UUID',
+  })
+  async getPriorityStatus(@Param('uuid') uuid: string) {
+    const priorityStatus = await this.priorityStatusService
+      .getRepository()
+      .findOne({
+        where: { uuid },
+      });
+
+    if (!priorityStatus) {
+      throw new NotFoundException(`Priority Status ${uuid} not found`);
+    }
+
+    return {
+      data: priorityStatus,
+    };
   }
 }
