@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
@@ -6,6 +8,7 @@ import {
   HttpStatus,
   NotFoundException,
   Param,
+  Post,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -15,6 +18,7 @@ import { Filterable } from '../shared/filterable.decorator';
 import { FilterableData } from '../shared/filterable-data';
 import { BaseResponse } from '../shared/base.response';
 import { PriorityStatus } from './priority-status.entity';
+import { PriorityStatusDTO } from './dto/priority-status.dto';
 
 @Controller('priority-status')
 @ApiTags('priority-status')
@@ -77,6 +81,31 @@ export class PriorityStatusController {
     if (!priorityStatus) {
       throw new NotFoundException(`Priority Status ${uuid} not found`);
     }
+
+    return {
+      data: priorityStatus,
+    };
+  }
+
+  @Post('/')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.CREATED)
+  async createPriorityStatus(@Body() data: PriorityStatusDTO) {
+    const existingPriorityStatus = await this.priorityStatusService
+      .getRepository()
+      .find({
+        where: [{ name: data.name }, { value: data.value }],
+      });
+
+    if (existingPriorityStatus.length > 0) {
+      throw new BadRequestException(
+        `Conflicting priority status existing with name ${data.name} or value ${data.value}`,
+      );
+    }
+
+    const priorityStatus = await this.priorityStatusService
+      .getRepository()
+      .save(data);
 
     return {
       data: priorityStatus,
