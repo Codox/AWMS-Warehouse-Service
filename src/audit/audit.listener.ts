@@ -7,12 +7,16 @@ import { Warehouse } from '../warehouse/warehouse.entity';
 import { CompanyCreatedEvent } from '../company/events/company-created.event';
 import { CompanyService } from '../company/company.service';
 import { Company } from '../company/company.entity';
+import { PriorityStatusCreatedEvent } from '../priority-status/events/priority-status-created.event';
+import { PriorityStatusService } from '../priority-status/priority-status.service';
+import { PriorityStatus } from "../priority-status/priority-status.entity";
 
 @Injectable()
 export class AuditListener {
   constructor(
     private readonly warehouseService: WarehouseService,
     private readonly companyService: CompanyService,
+    private readonly priorityStatusService: PriorityStatusService,
     private readonly auditService: AuditService,
   ) {}
 
@@ -43,6 +47,23 @@ export class AuditListener {
       action: data.type,
       oldData: null,
       newData: company,
+      userUuid: data.userUuid,
+      timestamp: data.createdAt,
+    });
+  }
+
+  @OnEvent('priority-status.created', { async: true })
+  async handlePriorityStatusCreatedEvent(data: PriorityStatusCreatedEvent) {
+    const priorityStatus = await this.priorityStatusService.getOne(
+      data.priorityStatusUuid,
+    );
+
+    await this.auditService.createAuditEntry({
+      recordId: priorityStatus.id,
+      type: PriorityStatus.name,
+      action: data.type,
+      oldData: null,
+      newData: priorityStatus,
       userUuid: data.userUuid,
       timestamp: data.createdAt,
     });
