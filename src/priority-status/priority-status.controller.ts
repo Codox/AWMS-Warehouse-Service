@@ -13,18 +13,24 @@ import {
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PriorityStatusService } from './priority-status.service';
-import { Roles } from 'nest-keycloak-connect';
+import { AuthenticatedUser, Roles } from 'nest-keycloak-connect';
 import { Filterable } from '../shared/filterable.decorator';
 import { FilterableData } from '../shared/filterable-data';
 import { BaseResponse } from '../shared/base.response';
 import { PriorityStatus } from './priority-status.entity';
 import { PriorityStatusDTO } from './dto/priority-status.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PriorityStatusCreatedEvent } from './events/priority-status-created.event';
+import { KeycloakUser } from '../user/keycloak-user';
 
 @Controller('priority-status')
 @ApiTags('priority-status')
 @UseInterceptors(ClassSerializerInterceptor)
 export class PriorityStatusController {
-  constructor(private readonly priorityStatusService: PriorityStatusService) {}
+  constructor(
+    private readonly priorityStatusService: PriorityStatusService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   @Get('/')
   @Roles({ roles: ['realm:super_admin'] })
@@ -90,22 +96,20 @@ export class PriorityStatusController {
   @Post('/')
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.CREATED)
-  async createPriorityStatus(@Body() data: PriorityStatusDTO) {
-    const existingPriorityStatus = await this.priorityStatusService
-      .getRepository()
-      .find({
-        where: [{ name: data.name }, { value: data.value }],
-      });
+  async createPriorityStatus(
+    @Body() data: PriorityStatusDTO,
+    @AuthenticatedUser() user: KeycloakUser,
+  ) {
+    const priorityStatus: PriorityStatus =
+      await this.priorityStatusService.createPriorityStatus(data);
 
-    if (existingPriorityStatus.length > 0) {
-      throw new BadRequestException(
-        `Conflicting priority status existing with name ${data.name} or value ${data.value}`,
-      );
-    }
-
-    const priorityStatus = await this.priorityStatusService
-      .getRepository()
-      .save(data);
+    this.eventEmitter.emit(
+      'priority-status.created',
+      new PriorityStatusCreatedEvent({
+        priorityStatusUuid: priorityStatus.uuid,
+        userUuid: user.sub,
+      }),
+    );
 
     return {
       data: priorityStatus,
