@@ -13,11 +13,11 @@ export class PriorityStatusService extends BaseService<PriorityStatus> {
   }
 
   async createPriorityStatus(data: PriorityStatusDTO): Promise<PriorityStatus> {
-    const existingPriorityStatus = await this.getRepository().find({
+    const existingPriorityStatus = await this.getRepository().findOne({
       where: [{ name: data.name }, { value: data.value }],
     });
 
-    if (existingPriorityStatus.length > 0) {
+    if (existingPriorityStatus) {
       throw new BadRequestException(
         `Conflicting priority status existing with name ${data.name} or value ${data.value}`,
       );
