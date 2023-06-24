@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -21,6 +22,7 @@ import { PriorityStatusDTO } from './dto/priority-status.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PriorityStatusCreatedEvent } from './events/priority-status-created.event';
 import { KeycloakUser } from '../user/keycloak-user';
+import { PriorityStatusUpdatedEvent } from './events/priority-status-updated.event';
 
 @Controller('priority-status')
 @ApiTags('priority-status')
@@ -112,6 +114,32 @@ export class PriorityStatusController {
 
     return {
       data: priorityStatus,
+    };
+  }
+
+  @Put('/:uuid')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.OK)
+  async updatePriorityStatus(
+    @Param('uuid') uuid: string,
+    @Body() data: PriorityStatusDTO,
+    @AuthenticatedUser() user: KeycloakUser,
+  ) {
+    const { old: oldPriorityStatus, new: newPriorityStatus } =
+      await this.priorityStatusService.updatePriorityStatus(uuid, data);
+
+    this.eventEmitter.emit(
+      'priority-status.updated',
+      new PriorityStatusUpdatedEvent({
+        priorityStatusUuid: newPriorityStatus.uuid,
+        userUuid: user.sub,
+        oldPriorityStatus,
+        newPriorityStatus,
+      }),
+    );
+
+    return {
+      data: newPriorityStatus,
     };
   }
 }
