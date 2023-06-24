@@ -15,6 +15,7 @@ import { PriorityStatusService } from '../../../priority-status/priority-status.
 import { PriorityStatusRepository } from '../../../priority-status/priority-status.repository';
 import { PriorityStatusCreatedEvent } from '../../../priority-status/events/priority-status-created.event';
 import { PriorityStatus } from '../../../priority-status/priority-status.entity';
+import { PriorityStatusUpdatedEvent } from '../../../priority-status/events/priority-status-updated.event';
 
 describe('AuditListener', () => {
   let auditListener: AuditListener;
@@ -157,6 +158,47 @@ describe('AuditListener', () => {
         newData: priorityStatus,
         userUuid: priorityStatusCreatedEvent.userUuid,
         timestamp: priorityStatusCreatedEvent.createdAt,
+      });
+    });
+  });
+
+  describe('handlePriorityStatusUpdatedEvent', () => {
+    it('Should create an audit entry when a priority status is updated', async () => {
+      const oldPriorityStatus = new PriorityStatus({
+        name: 'Old - High Priority',
+        description: 'Old - High Priority',
+        value: 1,
+      });
+
+      const newPriorityStatus = new PriorityStatus({
+        name: 'New - High Priority',
+        description: 'New - High Priority',
+        value: 999,
+      });
+
+      jest.spyOn(auditService, 'createAuditEntry').mockResolvedValue(null);
+
+      const priorityStatusUpdatedEvent: PriorityStatusUpdatedEvent = {
+        priorityStatusUuid: faker.string.uuid(),
+        type: 'update',
+        oldPriorityStatus,
+        newPriorityStatus,
+        userUuid: faker.string.uuid(),
+        createdAt: new Date(),
+      };
+
+      await auditListener.handlePriorityStatusUpdatedEvent(
+        priorityStatusUpdatedEvent,
+      );
+
+      expect(auditService.createAuditEntry).toHaveBeenCalledWith({
+        recordId: newPriorityStatus.id,
+        type: PriorityStatus.name,
+        action: priorityStatusUpdatedEvent.type,
+        oldData: oldPriorityStatus,
+        newData: newPriorityStatus,
+        userUuid: priorityStatusUpdatedEvent.userUuid,
+        timestamp: priorityStatusUpdatedEvent.createdAt,
       });
     });
   });
