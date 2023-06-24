@@ -9,7 +9,8 @@ import { CompanyService } from '../company/company.service';
 import { Company } from '../company/company.entity';
 import { PriorityStatusCreatedEvent } from '../priority-status/events/priority-status-created.event';
 import { PriorityStatusService } from '../priority-status/priority-status.service';
-import { PriorityStatus } from "../priority-status/priority-status.entity";
+import { PriorityStatus } from '../priority-status/priority-status.entity';
+import { PriorityStatusUpdatedEvent } from '../priority-status/events/priority-status-updated.event';
 
 @Injectable()
 export class AuditListener {
@@ -64,6 +65,22 @@ export class AuditListener {
       action: data.type,
       oldData: null,
       newData: priorityStatus,
+      userUuid: data.userUuid,
+      timestamp: data.createdAt,
+    });
+  }
+
+  @OnEvent('priority-status.updated', { async: true })
+  async handlePriorityStatusUpdatedEvent(data: PriorityStatusUpdatedEvent) {
+    const oldData = data.oldPriorityStatus;
+    const newData = data.newPriorityStatus;
+
+    await this.auditService.createAuditEntry({
+      recordId: newData.id,
+      type: PriorityStatus.name,
+      action: data.type,
+      oldData,
+      newData,
       userUuid: data.userUuid,
       timestamp: data.createdAt,
     });
