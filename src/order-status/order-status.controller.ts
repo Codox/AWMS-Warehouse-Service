@@ -8,12 +8,9 @@ import {
   Param,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { OrderStatusService } from './order-status.service';
 import { Roles } from 'nest-keycloak-connect';
-import { Filterable } from '../shared/filterable.decorator';
-import { FilterableData } from '../shared/filterable-data';
-import { BaseResponse } from '../shared/base.response';
 import { OrderStatus } from './order-status.entity';
 
 @Controller('order-status')
