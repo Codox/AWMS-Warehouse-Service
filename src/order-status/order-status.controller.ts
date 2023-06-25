@@ -25,25 +25,8 @@ export class OrderStatusController {
   @Get('/')
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
-  @ApiQuery({
-    name: 'name',
-    type: String,
-    required: false,
-
-    description: 'Order status name',
-  })
-  async getOrderStatuses(
-    @Filterable([
-      {
-        field: 'name',
-        type: 'string',
-      },
-    ])
-    filterable: FilterableData,
-  ): Promise<BaseResponse<OrderStatus[]>> {
-    return await this.orderStatusService
-      .getRepository()
-      .queryWithFilterable(filterable);
+  async getOrderStatuses(): Promise<OrderStatus[]> {
+    return await this.orderStatusService.getAll();
   }
 
   @Get('/:uuid')
