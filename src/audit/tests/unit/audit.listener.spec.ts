@@ -11,11 +11,11 @@ import { Company } from '../../../company/company.entity';
 import { CompanyRepository } from '../../../company/company.repository';
 import { WarehouseRepository } from '../../../warehouse/warehouse.repository';
 import { AuditRepository } from '../../audit.repository';
-import { PriorityStatusService } from '../../../priority-status/priority-status.service';
 import { PriorityStatusRepository } from '../../../priority-status/priority-status.repository';
 import { PriorityStatusCreatedEvent } from '../../../priority-status/events/priority-status-created.event';
 import { PriorityStatus } from '../../../priority-status/priority-status.entity';
 import { PriorityStatusUpdatedEvent } from '../../../priority-status/events/priority-status-updated.event';
+import { PriorityStatusService } from '../../../priority-status/priority-status.service';
 
 describe('AuditListener', () => {
   let auditListener: AuditListener;

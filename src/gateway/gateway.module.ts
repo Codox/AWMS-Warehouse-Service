@@ -6,6 +6,7 @@ import { WarehouseController } from './controllers/warehouse.controller';
 import { AuditModule } from '../audit/audit.module';
 import { PriorityStatusModule } from '../priority-status/priority-status.module';
 import { CountryModule } from '../country/country.module';
+import { OrderStatusModule } from '../order-status/order-status.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CountryModule } from '../country/country.module';
     AuditModule,
     CountryModule,
     PriorityStatusModule,
+    OrderStatusModule,
   ],
   controllers: [CompanyController, WarehouseController],
   providers: [],
