@@ -1,7 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Mixin } from 'ts-mixer';
 import {
-  BaseEntity,
   Column,
   Generated,
   Entity,
@@ -9,6 +8,7 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
 } from 'typeorm';
+import { BaseEntity } from '../shared/base.entity';
 
 @Entity('order_statuses')
 export class OrderStatus extends Mixin(BaseEntity) {
