@@ -3,6 +3,7 @@ import { PriorityStatus } from './priority-status/priority-status.entity';
 import { Company } from './company/company.entity';
 import { Warehouse } from './warehouse/warehouse.entity';
 import { Audit } from './audit/audit.entity';
+import { OrderStatus } from './order-status/order-status.entity';
 
 export const AppDataSource = new DataSource(
   getAWMSPostgresConnectionSourceOptions(true),
@@ -21,7 +22,7 @@ export function getAWMSPostgresConnectionSourceOptions(
     migrationsTableName: 'migrations',
     synchronize: false,
     logger: 'advanced-console',
-    entities: [Company, Warehouse, Audit, PriorityStatus],
+    entities: [Company, Warehouse, Audit, PriorityStatus, OrderStatus],
   };
 
   if (withMigrations) options['migrations'] = ['database/migrations/*.ts'];
