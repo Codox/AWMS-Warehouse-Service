@@ -3,14 +3,17 @@ import {
   CreateDateColumn,
   Entity,
   Generated,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { BaseEntity } from '../shared/base.entity';
 import { Exclude } from 'class-transformer';
 import { Mixin } from 'ts-mixer';
+import { DangerousGoods } from './dangerous-goods.entity';
 
-@Entity('dangerous_goods_classification')
+@Entity('dangerous_goods_classifications')
 export class DangerousGoodsClassification extends Mixin(BaseEntity) {
   @PrimaryGeneratedColumn()
   @Exclude()
@@ -25,6 +28,10 @@ export class DangerousGoodsClassification extends Mixin(BaseEntity) {
 
   @Column()
   division: string;
+
+  @ManyToOne(() => DangerousGoods)
+  @JoinColumn({ name: 'dangerous_goods_id' })
+  dangerousGoods: DangerousGoods;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
