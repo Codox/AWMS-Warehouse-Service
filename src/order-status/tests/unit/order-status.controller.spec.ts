@@ -83,7 +83,7 @@ describe('OrderStatusController', () => {
     });
   });
 
-  it('GET /order-status/:uuid should resolve correctly - 404', async () => {
+  it('GET /order-status/:uuid should not resolve correctly - 404', async () => {
     const orderStatus: OrderStatus = new OrderStatus({
       uuid: faker.string.uuid(),
       name: 'Back Order',
@@ -91,17 +91,14 @@ describe('OrderStatusController', () => {
         'The item is currently out of stock in the warehouse. It is on hold until new stock arrives to fulfill the order.',
     });
 
-    const baseResponse = {
-      data: orderStatus,
-    };
-
     jest
       .spyOn(orderStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => orderStatus);
+      .mockImplementation(async () => undefined);
 
-    const result = await controller.getOrderStatus(orderStatus.uuid);
+    await expect(controller.getOrderStatus(orderStatus.uuid)).rejects.toThrow(
+      `Order Status ${orderStatus.uuid} not found`,
+    );
 
-    expect(result).toEqual(baseResponse);
     expect(orderStatusService.getRepository().findOne).toHaveBeenCalledWith({
       where: { uuid: orderStatus.uuid },
     });

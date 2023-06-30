@@ -7,6 +7,7 @@ import { AuditModule } from '../audit/audit.module';
 import { PriorityStatusModule } from '../priority-status/priority-status.module';
 import { CountryModule } from '../country/country.module';
 import { OrderStatusModule } from '../order-status/order-status.module';
+import { ProductStatusModule } from '../product-status/product-status.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OrderStatusModule } from '../order-status/order-status.module';
     CountryModule,
     PriorityStatusModule,
     OrderStatusModule,
+    ProductStatusModule,
   ],
   controllers: [CompanyController, WarehouseController],
   providers: [],
