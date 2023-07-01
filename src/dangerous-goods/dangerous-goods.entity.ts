@@ -28,7 +28,7 @@ export class DangerousGoods extends Mixin(BaseEntity) {
   @Column({
     name: 'un_class',
   })
-  UNClass: string;
+  unClass: string;
 
   @OneToMany(
     () => DangerousGoodsClassification,

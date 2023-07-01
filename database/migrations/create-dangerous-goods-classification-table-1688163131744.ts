@@ -168,7 +168,7 @@ export class CreateDangerousGoodsClassificationTable1688163131744
     )) {
       const dangerousGoods = await dangerousGoodsRepository.findOne({
         where: {
-          UNClass: key,
+          unClass: key,
         },
       });
 

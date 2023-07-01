@@ -8,6 +8,7 @@ import { PriorityStatusModule } from '../priority-status/priority-status.module'
 import { CountryModule } from '../country/country.module';
 import { OrderStatusModule } from '../order-status/order-status.module';
 import { ProductStatusModule } from '../product-status/product-status.module';
+import { DangerousGoodsModule } from '../dangerous-goods/dangerous-goods.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProductStatusModule } from '../product-status/product-status.module';
     PriorityStatusModule,
     OrderStatusModule,
     ProductStatusModule,
+    DangerousGoodsModule,
   ],
   controllers: [CompanyController, WarehouseController],
   providers: [],
