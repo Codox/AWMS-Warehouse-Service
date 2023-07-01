@@ -39,9 +39,3 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e:ci
-        env:
-          DB_HOST: postgres
-          DB_USER: test
-          DB_PASS: test
-          DB_PORT: 5432
-          DB_NAME: test
