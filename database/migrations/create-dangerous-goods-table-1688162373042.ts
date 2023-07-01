@@ -7,39 +7,39 @@ export class CreateDangerousGoodsTable1688162373042
   defaultDangerousGoods: DangerousGoods[] = [
     new DangerousGoods({
       name: 'Explosives',
-      UNClass: '1',
+      unClass: '1',
     }),
     new DangerousGoods({
       name: 'Gases',
-      UNClass: '2',
+      unClass: '2',
     }),
     new DangerousGoods({
       name: 'Flammable liquid',
-      UNClass: '3',
+      unClass: '3',
     }),
     new DangerousGoods({
       name: 'Flammable solids',
-      UNClass: '4',
+      unClass: '4',
     }),
     new DangerousGoods({
       name: 'Oxidising substances',
-      UNClass: '5',
+      unClass: '5',
     }),
     new DangerousGoods({
       name: 'Toxic substances',
-      UNClass: '6',
+      unClass: '6',
     }),
     new DangerousGoods({
       name: 'Radioactive material',
-      UNClass: '7',
+      unClass: '7',
     }),
     new DangerousGoods({
       name: 'Corrosive substances',
-      UNClass: '8',
+      unClass: '8',
     }),
     new DangerousGoods({
       name: 'Miscellaneous dangerous goods',
-      UNClass: '9',
+      unClass: '9',
     }),
   ];
 
