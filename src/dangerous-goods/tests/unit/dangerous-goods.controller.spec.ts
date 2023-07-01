@@ -1,12 +1,12 @@
-import { DangerousGoodsController } from '../dangerous-goods.controller';
-import { DangerousGoodsService } from '../dangerous-goods.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DangerousGoodsRepository } from '../dangerous-goods.repository';
-import { DangerousGoodsClassification } from '../dangerous-goods-classification.entity';
-import { DangerousGoods } from '../dangerous-goods.entity';
-import { DangerousGoodsClassificationRepository } from '../dangerous-goods-classification.repository';
-import { DangerousGoodsClassificationService } from '../dangerous-goods-classification.service';
 import { faker } from '@faker-js/faker';
+import { DangerousGoodsController } from '../../dangerous-goods.controller';
+import { DangerousGoodsService } from '../../dangerous-goods.service';
+import { DangerousGoodsClassificationService } from '../../dangerous-goods-classification.service';
+import { DangerousGoodsRepository } from '../../dangerous-goods.repository';
+import { DangerousGoodsClassificationRepository } from '../../dangerous-goods-classification.repository';
+import { DangerousGoods } from '../../dangerous-goods.entity';
+import { DangerousGoodsClassification } from '../../dangerous-goods-classification.entity';
 
 describe('DangerousGoodsController', () => {
   let controller: DangerousGoodsController;
