@@ -22,6 +22,7 @@
     "test:unit:ci": "jest --runInBand --config jest-unit.json",
 
     "test:e2e:local": "cd test/e2e && ./run-local.sh",
+    "test:e2e:ci": "cd test/e2e && ./run-ci.sh",
 
     "test:e2e": "jest --maxWorkers=50% --config jest-e2e.json",
 
