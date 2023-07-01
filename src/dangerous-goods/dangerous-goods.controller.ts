@@ -26,9 +26,11 @@ export class DangerousGoodsController {
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
   async getDangerousGoodsList() {
-    return await this.dangerousGoodsService.getRepository().find({
-      relations: ['classifications'],
-    });
+    return {
+      data: await this.dangerousGoodsService.getRepository().find({
+        relations: ['classifications'],
+      }),
+    };
   }
 
   @Get('/:uuid')
