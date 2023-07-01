@@ -4,8 +4,10 @@ import { DangerousGoodsClassificationRepository } from './dangerous-goods-classi
 import { DangerousGoodsService } from './dangerous-goods.service';
 import { DangerousGoodsClassificationService } from './dangerous-goods-classification.service';
 import { DangerousGoodsController } from './dangerous-goods.controller';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
+  imports: [DatabaseModule],
   controllers: [DangerousGoodsController],
   providers: [
     DangerousGoodsRepository,

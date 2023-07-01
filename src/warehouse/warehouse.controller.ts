@@ -11,16 +11,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { WarehouseService } from '../../warehouse/warehouse.service';
 import { AuthenticatedUser, Roles } from 'nest-keycloak-connect';
-import { Filterable } from '../../shared/filterable.decorator';
-import { FilterableData } from '../../shared/filterable-data';
-import { BaseResponse } from '../../shared/base.response';
-import { Warehouse } from '../../warehouse/warehouse.entity';
-import { WarehouseDTO } from '../../warehouse/dto/warehouse.dto';
-import { KeycloakUser } from '../../user/keycloak-user';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { WarehouseCreatedEvent } from '../../warehouse/events/warehouse-created.event';
+import { WarehouseService } from './warehouse.service';
+import { Filterable } from '../shared/filterable.decorator';
+import { FilterableData } from '../shared/filterable-data';
+import { BaseResponse } from '../shared/base.response';
+import { Warehouse } from './warehouse.entity';
+import { WarehouseDTO } from './dto/warehouse.dto';
+import { KeycloakUser } from '../user/keycloak-user';
+import { WarehouseCreatedEvent } from './events/warehouse-created.event';
 
 @Controller('warehouse')
 @ApiTags('warehouse')
