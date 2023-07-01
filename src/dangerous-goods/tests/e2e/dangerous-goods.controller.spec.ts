@@ -1,11 +1,11 @@
-import { DangerousGoodsService } from '../dangerous-goods.service';
-import { DangerousGoodsModule } from '../dangerous-goods.module';
 import { Test } from '@nestjs/testing';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { faker } from '@faker-js/faker';
+import { DangerousGoodsModule } from '../../dangerous-goods.module';
+import { DangerousGoodsService } from '../../dangerous-goods.service';
 
 describe('DangerousGoodsController', () => {
   let app: NestFastifyApplication;
