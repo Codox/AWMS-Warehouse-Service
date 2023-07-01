@@ -21,9 +21,11 @@
     "test:unit:watch": "jest --watch --maxWorkers=25% --config jest-unit.json",
     "test:unit:ci": "jest --runInBand --config jest-unit.json",
 
+    "test:e2e": "jest --maxWorkers=50% --config jest-e2e.json",
+
+
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@fastify/static": "^6.10.2",
