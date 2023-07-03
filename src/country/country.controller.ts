@@ -25,11 +25,13 @@ export class CountryController {
       return this.formatCountry(key, countryData[key]);
     });
 
-    return orderBy(
-      formattedCountryData,
-      [(country) => country.name.toLowerCase()],
-      ['asc'],
-    );
+    return {
+      data: orderBy(
+        formattedCountryData,
+        [(country) => country.name.toLowerCase()],
+        ['asc'],
+      ),
+    };
   }
 
   @Get('/alpha/2/:code')
@@ -51,7 +53,9 @@ export class CountryController {
       throw new Error(`Country ${code} not found`);
     }
 
-    return this.formatCountry(code, countryData);
+    return {
+      data: this.formatCountry(code, countryData),
+    };
   }
 
   @Get('/:name')
@@ -78,7 +82,9 @@ export class CountryController {
       throw new Error(`Country ${name} not found`);
     }
 
-    return this.formatCountry(foundKey, foundObject);
+    return {
+      data: this.formatCountry(foundKey, foundObject),
+    };
   }
 
   formatCountry(key, countryData) {
