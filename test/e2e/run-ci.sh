@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export DB_HOST=postgres
+export DB_HOST="127.0.0.1"
 export DB_PORT=5432
 export DB_USER=test
 export DB_NAME=test
