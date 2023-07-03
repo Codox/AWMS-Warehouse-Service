@@ -4,7 +4,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 import { CountryModule } from '../../country.module';
-import { has, get, forEach, endsWith, split, find } from 'lodash';
+import { find } from 'lodash';
 
 describe('CountryController', () => {
   let app: NestFastifyApplication;
