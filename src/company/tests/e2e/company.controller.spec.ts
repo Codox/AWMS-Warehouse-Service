@@ -80,6 +80,22 @@ describe('CompanyController', () => {
       });
   });
 
+  it('POST /company should resolve correctly - 201', async () => {
+    const companyData = createValidCompany();
+
+    return app
+      .inject({
+        method: 'POST',
+        url: `/company`,
+        payload: companyData,
+      })
+      .then((result) => {
+        expect(result.statusCode).toEqual(201);
+        expect(result.json()).toHaveProperty('data');
+        expect(result.json().data.uuid).toEqual(companyData.uuid);
+      });
+  });
+
   it('GET /company/:uuid should not resolve correctly - 404', async () => {
     const uuid = faker.string.uuid();
     return app
