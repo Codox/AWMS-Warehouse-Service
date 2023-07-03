@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
   UseInterceptors,
 } from '@nestjs/common';
@@ -50,7 +51,7 @@ export class CountryController {
     const countryData = countryInformation.countries[code];
 
     if (!countryData) {
-      throw new Error(`Country ${code} not found`);
+      throw new NotFoundException(`Country ${code} not found`);
     }
 
     return {
@@ -79,7 +80,7 @@ export class CountryController {
     const foundObject = get(countryData, foundKey, null);
 
     if (!foundKey) {
-      throw new Error(`Country ${name} not found`);
+      throw new NotFoundException(`Country ${name} not found`);
     }
 
     return {
