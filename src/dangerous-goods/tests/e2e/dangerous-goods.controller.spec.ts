@@ -65,7 +65,7 @@ describe('DangerousGoodsController', () => {
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
-        expect(result.body).toContain('data');
+        expect(JSON.parse(result.body)).toHaveProperty('data');
 
         // Check if the dangerous good is the same as the one we fetched
         expect(JSON.parse(result.body).data.uuid).toEqual(dangerousGood.uuid);
@@ -87,7 +87,7 @@ describe('DangerousGoodsController', () => {
       })
       .then((result) => {
         expect(result.statusCode).toEqual(404);
-        expect(result.body).toContain('error');
+        expect(JSON.parse(result.body)).toHaveProperty('message');
 
         expect(JSON.parse(result.body)).toEqual({
           statusCode: 404,
