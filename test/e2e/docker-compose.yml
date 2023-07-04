@@ -5,6 +5,17 @@ services:
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
-      POSTGRES_DB: test
+    volumes:
+      - ./test/e2e/init.sql:/docker-entrypoint-initdb.d/
     ports:
       - "6000:5432"
+
+  keycloak:
+    image: 'ghcr.io/codox/awms-hyperlogic-keycloak:0.0.1'
+    environment:
+      KEYCLOAK_CREATE_ADMIN_USER: true
+      KEYCLOAK_ADMIN_USER: test
+      KEYCLOAK_ADMIN_PASSWORD: test
+
+      KEYCLOAK_DATABASE_HOST: db
+      KEYCLOAK_DATABASE_PORT: 5432
