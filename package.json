@@ -16,22 +16,18 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-
     "test:unit": "jest --maxWorkers=50% --config jest-unit.json",
     "test:unit:watch": "jest --watch --maxWorkers=25% --config jest-unit.json",
     "test:unit:ci": "jest --runInBand --config jest-unit.json",
-
     "test:e2e:local": "cd test/e2e && ./run-local.sh",
     "test:e2e:ci": "cd test/e2e && ./run-ci.sh",
-
     "test:e2e": "jest --maxWorkers=50% --config jest-e2e.json",
-
-
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "@fastify/static": "^6.10.2",
+    "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^9.4.0",
     "@nestjs/core": "^9.4.0",
     "@nestjs/event-emitter": "^1.4.1",
