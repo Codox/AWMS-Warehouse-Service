@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
 import { CountryController } from './country.controller';
+import {
+  getEndpointProtectionProviders,
+  getKeycloakConfiguration,
+} from '../shared/endpoint-protection';
 
 @Module({
-  providers: [],
+  imports: [getKeycloakConfiguration()],
+  providers: [...getEndpointProtectionProviders()],
   controllers: [CountryController],
   exports: [],
 })
