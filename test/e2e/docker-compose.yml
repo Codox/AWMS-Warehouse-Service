@@ -19,3 +19,8 @@ services:
 
       KEYCLOAK_DATABASE_HOST: db
       KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: keycloak
+      KEYCLOAK_DATABASE_USER: test
+      KEYCLOAK_DATABASE_PASSWORD: test
+    ports:
+      - "6080:8080"
