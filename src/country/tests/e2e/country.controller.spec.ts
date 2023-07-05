@@ -5,9 +5,12 @@ import {
 import { Test } from '@nestjs/testing';
 import { CountryModule } from '../../country.module';
 import { find } from 'lodash';
+import { HttpModule, HttpService } from "@nestjs/axios";
+import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
 
 describe('CountryController', () => {
   let app: NestFastifyApplication;
+  let e2eTestingService: E2ETestingService;
 
   const testData = {
     name: 'Ukraine',
@@ -24,15 +27,29 @@ describe('CountryController', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CountryModule],
+      imports: [CountryModule, HttpModule],
+      providers: [E2ETestingService],
     }).compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
 
+    e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
+
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
+  });
+
+  it('/country should require authentication - 401', async () => {
+    return app
+      .inject({
+        method: 'GET',
+        url: '/country',
+      })
+      .then((result) => {
+        expect(result.statusCode).toEqual(401);
+      });
   });
 
   it('GET /country should resolve correctly - 200', async () => {
@@ -40,6 +57,9 @@ describe('CountryController', () => {
       .inject({
         method: 'GET',
         url: '/country',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -58,6 +78,9 @@ describe('CountryController', () => {
       .inject({
         method: 'GET',
         url: '/country/alpha/2/ua',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -71,6 +94,9 @@ describe('CountryController', () => {
       .inject({
         method: 'GET',
         url: '/country/alpha/2/UA',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -84,6 +110,9 @@ describe('CountryController', () => {
       .inject({
         method: 'GET',
         url: '/country/alpha/2/ZZ',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(404);
@@ -101,6 +130,9 @@ describe('CountryController', () => {
       .inject({
         method: 'GET',
         url: '/country/Ukraine',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -114,6 +146,9 @@ describe('CountryController', () => {
       .inject({
         method: 'GET',
         url: '/country/Rexchoppers Kingdom',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(404);
