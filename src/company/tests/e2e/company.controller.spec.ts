@@ -7,6 +7,10 @@ import {
 import { CompanyService } from '../../company.service';
 import { Company } from '../../company.entity';
 import { faker } from '@faker-js/faker';
+import { AuditService } from '../../../audit/audit.service';
+import { HttpModule } from '@nestjs/axios';
+import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
+import { AuditModule } from '../../../audit/audit.module';
 
 function createValidCompany() {
   return new Company({
@@ -29,10 +33,13 @@ function createValidCompany() {
 describe('CompanyController', () => {
   let app: NestFastifyApplication;
   let companyService: CompanyService;
+  let auditService: AuditService;
+  let e2eTestingService: E2ETestingService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CompanyModule],
+      imports: [CompanyModule, AuditModule, HttpModule],
+      providers: [E2ETestingService],
     }).compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(
@@ -40,6 +47,8 @@ describe('CompanyController', () => {
     );
 
     companyService = moduleRef.get<CompanyService>(CompanyService);
+    auditService = moduleRef.get<AuditService>(AuditService);
+    e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
 
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
@@ -54,6 +63,9 @@ describe('CompanyController', () => {
       .inject({
         method: 'GET',
         url: `/company`,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -72,6 +84,9 @@ describe('CompanyController', () => {
       .inject({
         method: 'GET',
         url: `/company/${company.uuid}`,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -88,11 +103,18 @@ describe('CompanyController', () => {
         method: 'POST',
         url: `/company`,
         payload: companyData,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
-      .then((result) => {
+      .then(async (result) => {
         expect(result.statusCode).toEqual(201);
         expect(result.json()).toHaveProperty('data');
         expect(result.json().data.uuid).toEqual(companyData.uuid);
+
+        const audit = await auditService.getRepository().findOne({
+          where: {},
+        });
       });
   });
 
@@ -102,6 +124,9 @@ describe('CompanyController', () => {
       .inject({
         method: 'GET',
         url: `/company/${uuid}`,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(404);
