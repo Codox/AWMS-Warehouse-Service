@@ -8,7 +8,7 @@ export DB_PASS=test
 
 export KEYCLOAK_HOST="127.0.0.1"
 export KEYCLOAK_INTERNAL_PORT=8080
-export KEYCLOAK_EXTERNAL_PORT=8080
+export KEYCLOAK_EXTERNAL_PORT=6080
 
 KEYCLOAK_CONTAINER_ID=$(docker ps -q -f name=keycloak)
 
