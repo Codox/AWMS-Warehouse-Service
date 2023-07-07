@@ -6,7 +6,7 @@ export DB_USER=test
 export DB_NAME=test
 export DB_PASS=test
 
-export KEYCLOAK_HOST="127.0.0.1"
+export KEYCLOAK_HOST="keycloak"
 export KEYCLOAK_INTERNAL_PORT=8080
 export KEYCLOAK_EXTERNAL_PORT=8080
 
