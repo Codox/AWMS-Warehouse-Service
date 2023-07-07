@@ -8,7 +8,7 @@ export DB_PASS=test
 
 export KEYCLOAK_HOST="127.0.0.1"
 export KEYCLOAK_INTERNAL_PORT=8080
-export KEYCLOAK_EXTERNAL_PORT=6080
+export KEYCLOAK_EXTERNAL_PORT=8080
 
 KEYCLOAK_CONTAINER_ID=$(docker ps -q -f name=keycloak)
 
@@ -31,4 +31,4 @@ cd ../..
 npm run migrate:run
 
 # Run the tests
-./node_modules/.bin/jest --maxWorkers=50% --config jest-e2e.json
+env KEYCLOAK_URL=http://$KEYCLOAK_HOST:$KEYCLOAK_EXTERNAL_PORT ./node_modules/.bin/jest --maxWorkers=50% --config jest-e2e.json
