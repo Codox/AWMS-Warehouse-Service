@@ -53,6 +53,8 @@ jobs:
           KEYCLOAK_DATABASE_NAME: keycloak
           KEYCLOAK_DATABASE_USER: test
           KEYCLOAK_DATABASE_PASSWORD: test
+        ports:
+          - 8080:8080
 
     steps:
       - name: Checkout repository
