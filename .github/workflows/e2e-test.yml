@@ -55,6 +55,11 @@ jobs:
           KEYCLOAK_DATABASE_PASSWORD: test
         ports:
           - 6080:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:6060/realms/master || exit 1" 
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repository
