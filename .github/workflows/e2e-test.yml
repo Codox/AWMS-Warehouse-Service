@@ -48,7 +48,7 @@ jobs:
           KEYCLOAK_ADMIN_USER: test
           KEYCLOAK_ADMIN_PASSWORD: test
 
-          KEYCLOAK_DATABASE_HOST: "127.0.0.1"
+          KEYCLOAK_DATABASE_HOST: postgres-keycloak
           KEYCLOAK_DATABASE_PORT: 5433
           KEYCLOAK_DATABASE_NAME: keycloak
           KEYCLOAK_DATABASE_USER: test
@@ -56,7 +56,7 @@ jobs:
         ports:
           - 6080:8080
         options: >-
-          --health-cmd "curl --retry-connrefused --retry-delay 5 --retry-max-time 60 -f http://localhost:6080/realms/master || exit 1" 
+          --health-cmd "curl --retry-connrefused --retry-delay 5 --retry-max-time 60 -f http://localhost:8080/realms/master || exit 1" 
           --health-interval 10s
           --health-timeout 5s
           --health-retries 15
