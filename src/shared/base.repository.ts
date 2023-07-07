@@ -21,7 +21,6 @@ export class BaseRepository<T> extends Repository<T> {
     if (filterable.fields && filterable.fields.length !== 0) {
       const whereOptions = options ? options.where : {};
       forEach(filterable.fields, (value) => {
-        console.log(value);
         switch (value.type) {
           case 'string':
             whereOptions[value.field] = ILike(`%${value.value}%`);

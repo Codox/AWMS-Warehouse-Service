@@ -7,7 +7,6 @@ import {
 import { CompanyService } from '../../company.service';
 import { Company } from '../../company.entity';
 import { faker } from '@faker-js/faker';
-import { AuditService } from '../../../audit/audit.service';
 import { HttpModule } from '@nestjs/axios';
 import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
 import { AuditModule } from '../../../audit/audit.module';
@@ -33,7 +32,6 @@ function createValidCompany() {
 describe('CompanyController', () => {
   let app: NestFastifyApplication;
   let companyService: CompanyService;
-  let auditService: AuditService;
   let e2eTestingService: E2ETestingService;
 
   beforeAll(async () => {
@@ -47,7 +45,6 @@ describe('CompanyController', () => {
     );
 
     companyService = moduleRef.get<CompanyService>(CompanyService);
-    auditService = moduleRef.get<AuditService>(AuditService);
     e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
 
     await app.init();
@@ -112,9 +109,13 @@ describe('CompanyController', () => {
         expect(result.json()).toHaveProperty('data');
         expect(result.json().data.uuid).toEqual(companyData.uuid);
 
-        const audit = await auditService.getRepository().findOne({
-          where: {},
+        const company = await companyService.getRepository().findOne({
+          where: {
+            uuid: result.json().data.uuid,
+          },
         });
+
+        expect(company).not.toBeNull();
       });
   });
 
