@@ -32,7 +32,7 @@ jobs:
         env:
           POSTGRES_USER: test
           POSTGRES_PASSWORD: test
-          POSTGRES_DB: test
+          POSTGRES_DB: keycloak
         ports:
           - 5433:5432
         options: >-
@@ -55,11 +55,6 @@ jobs:
           KEYCLOAK_DATABASE_PASSWORD: test
         ports:
           - 6080:8080
-        options: >-
-          --health-cmd "curl --retry-connrefused --retry-delay 5 --retry-max-time 60 -f http://localhost:8080/realms/master || exit 1" 
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 15
 
     steps:
       - name: Checkout repository
