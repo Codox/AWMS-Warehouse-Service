@@ -35,4 +35,4 @@ cd ../..
 npm run migrate:run
 
 # Run the tests
-env KEYCLOAK_URL=http://$KEYCLOAK_HOST:$KEYCLOAK_EXTERNAL_PORT ./node_modules/.bin/jest --maxWorkers=50% --config jest-e2e.json
+env KEYCLOAK_URL=http://$KEYCLOAK_HOST:$KEYCLOAK_EXTERNAL_PORT KEYCLOAK_REALM=master KEYCLOAK_CLIENT_ID=test KEYCLOAK_CLIENT_SECRET=$CLIENT_SECRET ./node_modules/.bin/jest --maxWorkers=50% --config jest-e2e.json
