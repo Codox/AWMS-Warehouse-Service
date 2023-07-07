@@ -1,6 +1,5 @@
 import { OrderStatusController } from '../../order-status.controller';
 import { OrderStatusService } from '../../order-status.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrderStatusRepository } from '../../order-status.repository';
 import { OrderStatus } from '../../order-status.entity';

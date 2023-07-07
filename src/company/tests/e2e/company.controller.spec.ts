@@ -51,6 +51,17 @@ describe('CompanyController', () => {
     await app.getHttpAdapter().getInstance().ready();
   });
 
+  it('/company should require authentication - 401', async () => {
+    return app
+      .inject({
+        method: 'GET',
+        url: '/company',
+      })
+      .then((result) => {
+        expect(result.statusCode).toEqual(401);
+      });
+  });
+
   it('GET /company should resolve correctly - 200', async () => {
     const companyData = createValidCompany();
 

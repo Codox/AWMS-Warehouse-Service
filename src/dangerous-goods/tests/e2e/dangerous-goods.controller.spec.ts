@@ -6,14 +6,18 @@ import {
 import { faker } from '@faker-js/faker';
 import { DangerousGoodsModule } from '../../dangerous-goods.module';
 import { DangerousGoodsService } from '../../dangerous-goods.service';
+import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
+import { HttpModule } from '@nestjs/axios';
 
 describe('DangerousGoodsController', () => {
   let app: NestFastifyApplication;
   let service: DangerousGoodsService;
+  let e2eTestingService: E2ETestingService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [DangerousGoodsModule],
+      imports: [DangerousGoodsModule, HttpModule],
+      providers: [E2ETestingService],
     }).compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(
@@ -21,9 +25,21 @@ describe('DangerousGoodsController', () => {
     );
 
     service = moduleRef.get<DangerousGoodsService>(DangerousGoodsService);
+    e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
 
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
+  });
+
+  it('/dangerous-goods should require authentication - 401', async () => {
+    return app
+      .inject({
+        method: 'GET',
+        url: '/dangerous-goods',
+      })
+      .then((result) => {
+        expect(result.statusCode).toEqual(401);
+      });
   });
 
   it('GET /dangerous-goods should resolve correctly - 200', async () => {
@@ -31,6 +47,9 @@ describe('DangerousGoodsController', () => {
       .inject({
         method: 'GET',
         url: '/dangerous-goods',
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -62,6 +81,9 @@ describe('DangerousGoodsController', () => {
       .inject({
         method: 'GET',
         url: `/dangerous-goods/${dangerousGood.uuid}`,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(200);
@@ -84,6 +106,9 @@ describe('DangerousGoodsController', () => {
       .inject({
         method: 'GET',
         url: `/dangerous-goods/${uuid}`,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
       })
       .then((result) => {
         expect(result.statusCode).toEqual(404);
