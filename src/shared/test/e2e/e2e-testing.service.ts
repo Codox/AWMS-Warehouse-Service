@@ -36,13 +36,3 @@ export class E2ETestingService {
     return data.access_token;
   }
 }
-
-/*export async function getAccessToken(app: NestFastifyApplication) {
-  const http = app.getHttpAdapter().getInstance();
-
-  const response = await http.post({
-    url: 'http://localhost:6080/auth/realms/master/protocol/openid-connect/token',
-  });
-
-  console.log(response);
-}*/
