@@ -8,12 +8,9 @@ export DB_PASS=test
 
 export KEYCLOAK_HOST="127.0.0.1"
 export KEYCLOAK_INTERNAL_PORT=8080
-export KEYCLOAK_EXTERNAL_PORT=6080
+export KEYCLOAK_EXTERNAL_PORT=8080
 
 KEYCLOAK_CONTAINER_ID=$(docker ps -q -f name=keycloak)
-
-echo $KEYCLOAK_CONTAINER_ID
-echo "http://$KEYCLOAK_HOST:$KEYCLOAK_INTERNAL_PORT"
 
 docker exec --user keycloak "$KEYCLOAK_CONTAINER_ID" /opt/bitnami/keycloak/bin/kcadm.sh config credentials --config=/opt/bitnami/keycloak/.kcadm.config --server=http://$KEYCLOAK_HOST:$KEYCLOAK_INTERNAL_PORT --realm=master --user=test --password=test
 CREATE_CLIENT_RESPONSE=$(docker exec --user keycloak "$KEYCLOAK_CONTAINER_ID" /opt/bitnami/keycloak/bin/kcadm.sh create clients --config /opt/bitnami/keycloak/.kcadm.config --server http://$KEYCLOAK_HOST:$KEYCLOAK_INTERNAL_PORT --realm master -s clientId=test -s enabled=true -s publicClient=false -s directAccessGrantsEnabled=true -s clientAuthenticatorType=client-secret 2>&1)
