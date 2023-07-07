@@ -53,6 +53,11 @@ jobs:
           KEYCLOAK_DATABASE_NAME: keycloak
           KEYCLOAK_DATABASE_USER: test
           KEYCLOAK_DATABASE_PASSWORD: test
+        options: >-
+          --health-cmd "curl --retry-connrefused --retry-delay 5 --retry-max-time 60 -f http://127.0.01:8080/realms/master || exit 1" 
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 6080:8080
 
