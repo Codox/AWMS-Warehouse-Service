@@ -48,7 +48,7 @@ jobs:
           KEYCLOAK_ADMIN_USER: test
           KEYCLOAK_ADMIN_PASSWORD: test
 
-          KEYCLOAK_DATABASE_HOST: postgres-keycloak
+          KEYCLOAK_DATABASE_HOST: "127.0.0.1"
           KEYCLOAK_DATABASE_PORT: 5433
           KEYCLOAK_DATABASE_NAME: keycloak
           KEYCLOAK_DATABASE_USER: test
