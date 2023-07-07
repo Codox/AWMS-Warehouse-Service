@@ -56,7 +56,7 @@ jobs:
         ports:
           - 6080:8080
         options: >-
-          --health-cmd "curl -f http://localhost:6080/realms/master || exit 1" 
+          --health-cmd "curl --retry-connrefused --retry-delay 5 --retry-max-time 60 -f http://localhost:6080/realms/master || exit 1" 
           --health-interval 10s
           --health-timeout 5s
           --health-retries 15
