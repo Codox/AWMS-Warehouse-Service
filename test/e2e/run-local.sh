@@ -74,8 +74,6 @@ USER_UUID=$(echo "$GET_USER_RESPONSE" | awk -F'"' '{print $4}')
 docker exec --user keycloak "$KEYCLOAK_CONTAINER_ID" /opt/bitnami/keycloak/bin/kcadm.sh create roles --config /opt/bitnami/keycloak/.kcadm.config --server http://$KEYCLOAK_HOST:$KEYCLOAK_INTERNAL_PORT --realm master -s name=super_admin
 docker exec --user keycloak "$KEYCLOAK_CONTAINER_ID" /opt/bitnami/keycloak/bin/kcadm.sh add-roles --config /opt/bitnami/keycloak/.kcadm.config --server http://$KEYCLOAK_HOST:$KEYCLOAK_INTERNAL_PORT --realm master --uusername test --rolename super_admin
 
-
-
 # cd to main code directory
 cd ../..
 
