@@ -27,6 +27,33 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      postgres-keycloak:
+        image: 'postgres:13.5-alpine'
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      keycloak:
+        image: 'ghcr.io/codox/awms-hyperlogic-keycloak:0.0.1'
+        env:
+          KEYCLOAK_CREATE_ADMIN_USER: true
+          KEYCLOAK_ADMIN_USER: test
+          KEYCLOAK_ADMIN_PASSWORD: test
+
+          KEYCLOAK_DATABASE_HOST: postgres-keycloak
+          KEYCLOAK_DATABASE_PORT: 5433
+          KEYCLOAK_DATABASE_NAME: keycloak
+          KEYCLOAK_DATABASE_USER: test
+          KEYCLOAK_DATABASE_PASSWORD: test
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
