@@ -68,8 +68,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Run E2E tests
         run: npm run test:e2e:ci
