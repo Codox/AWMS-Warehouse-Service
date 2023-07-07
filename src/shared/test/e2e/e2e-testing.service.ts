@@ -10,7 +10,7 @@ export class E2ETestingService {
     const { data } = await firstValueFrom(
       this.httpService
         .post<any>(
-          'http://localhost:6080/realms/master/protocol/openid-connect/token',
+          'http://127.0.0.1:6080/realms/master/protocol/openid-connect/token',
           {
             grant_type: 'password',
             client_id: process.env.KEYCLOAK_CLIENT_ID,
