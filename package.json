@@ -16,7 +16,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test:unit": "jest --maxWorkers=50% --config jest-unit.json",
+    "test:unit:local": "jest --maxWorkers=50% --config jest-unit.json",
     "test:unit:watch": "jest --watch --maxWorkers=25% --config jest-unit.json",
     "test:unit:ci": "jest --runInBand --config jest-unit.json",
     "test:e2e:local": "cd test/e2e && ./run-local.sh",
