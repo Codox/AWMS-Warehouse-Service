@@ -127,7 +127,7 @@ describe('PriorityStatusController', () => {
     });
   });
 
-  it('POST /company should resolve correctly - 201', async () => {
+  it('POST /priority-status should resolve correctly - 201', async () => {
     const priorityStatus = new PriorityStatus({
       name: 'High',
       description: 'Very high priority',
