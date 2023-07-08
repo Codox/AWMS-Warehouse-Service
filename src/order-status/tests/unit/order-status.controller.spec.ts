@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OrderStatusRepository } from '../../order-status.repository';
 import { OrderStatus } from '../../order-status.entity';
 import { faker } from '@faker-js/faker';
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException } from '@nestjs/common';
 
 describe('OrderStatusController', () => {
   let controller: OrderStatusController;
