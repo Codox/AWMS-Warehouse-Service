@@ -18,7 +18,7 @@ import {
   mockFindOne,
   mockQueryWithFilterable,
 } from '../../../shared/test/unit-test-utilities';
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { NotFoundException } from '@nestjs/common';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
