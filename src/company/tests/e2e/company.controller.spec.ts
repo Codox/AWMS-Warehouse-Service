@@ -141,8 +141,6 @@ describe('CompanyController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(result.json()).toHaveProperty('message');
         expectEndpointCalledNotFound(result, `Company ${uuid} not found`);
       });
   });

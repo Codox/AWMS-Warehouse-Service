@@ -5,8 +5,12 @@ import {
 import { Test } from '@nestjs/testing';
 import { CountryModule } from '../../country.module';
 import { find } from 'lodash';
-import { HttpModule, HttpService } from "@nestjs/axios";
+import { HttpModule } from '@nestjs/axios';
 import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
+import {
+  expectEndpointCalledNotFound,
+  expectEndpointCalledSuccessfully,
+} from '../../../shared/test/e2e-test-utilities';
 
 describe('CountryController', () => {
   let app: NestFastifyApplication;
@@ -62,8 +66,7 @@ describe('CountryController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(JSON.parse(result.body)).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
 
         const existingCountry = find(JSON.parse(result.body).data, {
           name: 'Ukraine',
@@ -83,8 +86,7 @@ describe('CountryController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(JSON.parse(result.body)).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(JSON.parse(result.body).data).toEqual(testData);
       });
   });
@@ -99,8 +101,7 @@ describe('CountryController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(JSON.parse(result.body)).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(JSON.parse(result.body).data).toEqual(testData);
       });
   });
@@ -115,13 +116,7 @@ describe('CountryController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(JSON.parse(result.body)).toHaveProperty('message');
-        expect(JSON.parse(result.body)).toEqual({
-          statusCode: 404,
-          message: 'Country ZZ not found',
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(result, 'Country ZZ not found');
       });
   });
 
@@ -135,8 +130,7 @@ describe('CountryController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(JSON.parse(result.body)).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(JSON.parse(result.body).data).toEqual(testData);
       });
   });
@@ -151,13 +145,10 @@ describe('CountryController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(JSON.parse(result.body)).toHaveProperty('message');
-        expect(JSON.parse(result.body)).toEqual({
-          statusCode: 404,
-          message: 'Country Rexchoppers Kingdom not found',
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(
+          result,
+          'Country Rexchoppers Kingdom not found',
+        );
       });
   });
 });
