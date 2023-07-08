@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { KeycloakUser } from '../../user/keycloak-user';
 import { BaseRepository } from '../base.repository';
 import { FilterableData } from '../filterable-data';
+import { CompanyDTO } from "../../company/dto/company.dto";
 
 export function buildTestModule() {}
 
@@ -23,6 +24,23 @@ export function createCompany(): Company {
     zipCode: faker.location.zipCode(),
     country: faker.location.countryCode(),
   });
+}
+
+export function createCompanyDTO(): CompanyDTO {
+  return {
+    name: faker.company.name(),
+    code: 'TEST',
+    contactTelephone: faker.phone.number('+44##########'),
+    addressLines: [
+      faker.location.streetAddress(),
+      faker.location.secondaryAddress(),
+    ],
+    town: faker.location.city(),
+    region: faker.location.state(),
+    city: faker.location.city(),
+    zipCode: faker.location.zipCode(),
+    country: faker.location.country(),
+  };
 }
 
 export function createKeycloakUser(): KeycloakUser {
@@ -50,6 +68,12 @@ export function mockQueryWithFilterable(
 
 export function mockFindOne(repository: BaseRepository<any>, data: any) {
   jest.spyOn(repository, 'findOne').mockImplementation(async () => {
+    return data;
+  });
+}
+
+export function mockSave(repository: BaseRepository<any>, data: any) {
+  jest.spyOn(repository, 'save').mockImplementation(async () => {
     return data;
   });
 }
