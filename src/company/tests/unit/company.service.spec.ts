@@ -9,7 +9,7 @@ import {
   expectExceptionToBeThrown,
   mockFindOne,
   mockSave,
-} from '../../../shared/test/test-utilities';
+} from '../../../shared/test/unit-test-utilities';
 
 describe('CompanyService', () => {
   let companyService: CompanyService;

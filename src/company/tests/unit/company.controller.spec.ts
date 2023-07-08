@@ -17,7 +17,7 @@ import {
   expectResponseToBeCorrect,
   mockFindOne,
   mockQueryWithFilterable,
-} from '../../../shared/test/test-utilities';
+} from '../../../shared/test/unit-test-utilities';
 import { BadRequestException } from '@nestjs/common';
 
 describe('CompanyController', () => {

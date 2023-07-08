@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { KeycloakUser } from '../../user/keycloak-user';
 import { BaseRepository } from '../base.repository';
 import { FilterableData } from '../filterable-data';
-import { CompanyDTO } from "../../company/dto/company.dto";
+import { CompanyDTO } from '../../company/dto/company.dto';
 
 export function buildTestModule() {}
 
