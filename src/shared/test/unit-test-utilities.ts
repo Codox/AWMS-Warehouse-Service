@@ -5,8 +5,6 @@ import { BaseRepository } from '../base.repository';
 import { FilterableData } from '../filterable-data';
 import { CompanyDTO } from '../../company/dto/company.dto';
 
-export function buildTestModule() {}
-
 export function createCompany(): Company {
   return new Company({
     uuid: faker.string.uuid(),
@@ -68,6 +66,12 @@ export function mockQueryWithFilterable(
 
 export function mockFindOne(repository: BaseRepository<any>, data: any) {
   jest.spyOn(repository, 'findOne').mockImplementation(async () => {
+    return data;
+  });
+}
+
+export function mockFind(repository: BaseRepository<any>, data: any) {
+  jest.spyOn(repository, 'find').mockImplementation(async () => {
     return data;
   });
 }
