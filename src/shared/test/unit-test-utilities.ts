@@ -64,22 +64,29 @@ export function mockQueryWithFilterable(
   });
 }
 
-export function mockFindOne(repository: BaseRepository<any>, data: any) {
+export function mockFindOne(
+  repository: BaseRepository<any>,
+  data: any | any[],
+) {
+  if (Array.isArray(data)) {
+    for (const item of data) {
+      jest.spyOn(repository, 'findOne').mockResolvedValueOnce(item);
+    }
+
+    return;
+  }
+
   jest.spyOn(repository, 'findOne').mockImplementation(async () => {
     return data;
   });
 }
 
 export function mockFind(repository: BaseRepository<any>, data: any) {
-  jest.spyOn(repository, 'find').mockImplementationOnce(async () => {
-    return data;
-  });
+  jest.spyOn(repository, 'find').mockResolvedValueOnce(data);
 }
 
 export function mockSave(repository: BaseRepository<any>, data: any) {
-  jest.spyOn(repository, 'save').mockImplementation(async () => {
-    return data;
-  });
+  jest.spyOn(repository, 'save').mockResolvedValueOnce(data);
 }
 
 export function expectFilterableCalledCorrectly(
