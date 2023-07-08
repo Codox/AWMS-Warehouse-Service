@@ -23,7 +23,7 @@ export class OrderStatusController {
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
   async getOrderStatuses(): Promise<{ data: OrderStatus[] }> {
-    return { data: await this.orderStatusService.getAll() };
+    return { data: await this.orderStatusService.getRepository().find() };
   }
 
   @Get('/:uuid')

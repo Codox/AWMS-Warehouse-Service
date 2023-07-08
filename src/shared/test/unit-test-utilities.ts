@@ -71,7 +71,7 @@ export function mockFindOne(repository: BaseRepository<any>, data: any) {
 }
 
 export function mockFind(repository: BaseRepository<any>, data: any) {
-  jest.spyOn(repository, 'find').mockImplementation(async () => {
+  jest.spyOn(repository, 'find').mockImplementationOnce(async () => {
     return data;
   });
 }
@@ -123,7 +123,15 @@ export async function expectExceptionToBeThrown(
   promise: Promise<any>,
   expectedException: any,
 ) {
-  await expect(promise).rejects.toThrow(expectedException);
+  try {
+    await promise;
+    fail(
+      'Expected an exception to be thrown, but the promise resolved successfully.',
+    );
+  } catch (error) {
+    expect(error.constructor.name).toBe(expectedException.name);
+    expect(error.message).toBe(expectedException.message);
+  }
 }
 
 export function expectEventEmitted(
