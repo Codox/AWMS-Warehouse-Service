@@ -49,6 +49,18 @@ export class WarehouseController {
         type: 'array',
       },
       {
+        field: 'town',
+        type: 'string',
+      },
+      {
+        field: 'city',
+        type: 'string',
+      },
+      {
+        field: 'region',
+        type: 'string',
+      },
+      {
         field: 'zipCode',
         type: 'string',
       },
