@@ -7,6 +7,7 @@ import { OrderStatus } from './order-status/order-status.entity';
 import { ProductStatus } from './product-status/product-status.entity';
 import { DangerousGoods } from './dangerous-goods/dangerous-goods.entity';
 import { DangerousGoodsClassification } from './dangerous-goods/dangerous-goods-classification.entity';
+import { WarehouseLocation } from './warehouse-location/warehouse-location.entity';
 
 export const AppDataSource = new DataSource(
   getAWMSPostgresConnectionSourceOptions(true),
@@ -28,6 +29,7 @@ export function getAWMSPostgresConnectionSourceOptions(
     entities: [
       Company,
       Warehouse,
+      WarehouseLocation,
       Audit,
       PriorityStatus,
       OrderStatus,

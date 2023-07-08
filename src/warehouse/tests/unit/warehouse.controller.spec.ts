@@ -1,4 +1,3 @@
-import { WarehouseController } from '../../../gateway/controllers/warehouse.controller';
 import { WarehouseService } from '../../warehouse.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -7,6 +6,7 @@ import { Warehouse } from '../../warehouse.entity';
 import { faker } from '@faker-js/faker';
 import { FilterableData } from '../../../shared/filterable-data';
 import { KeycloakUser } from '../../../user/keycloak-user';
+import { WarehouseController } from '../../warehouse.controller';
 
 describe('WarehouseController', () => {
   let controller: WarehouseController;

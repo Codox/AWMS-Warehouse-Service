@@ -57,7 +57,7 @@ export class PriorityStatusService extends BaseService<PriorityStatus> {
       );
     }
 
-    let updatedPriorityStatus = Object.assign(existingPriorityStatus, data);
+    let updatedPriorityStatus = { ...existingPriorityStatus, ...data };
     updatedPriorityStatus = await this.priorityStatusRepository.save(
       updatedPriorityStatus,
     );

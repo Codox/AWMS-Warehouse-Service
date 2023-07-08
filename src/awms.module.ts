@@ -1,31 +1,44 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { getAWMSPostgresConnectionSourceOptions } from './ormconfig';
 import {
   AuthGuard,
   KeycloakConnectModule,
   PolicyEnforcementMode,
+  RoleGuard,
   TokenValidation,
 } from 'nest-keycloak-connect';
 import { APP_GUARD } from '@nestjs/core';
-import { AppController } from './app.controller';
+import { GatewayModule } from './gateway/gateway.module';
+import { DatabaseExceptionFilter } from './shared/filters/database-exception.filter';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { DangerousGoodsModule } from './dangerous-goods/dangerous-goods.module';
+import { CompanyModule } from './company/company.module';
+import { WarehouseModule } from './warehouse/warehouse.module';
+import { AuditModule } from './audit/audit.module';
+import { CountryModule } from './country/country.module';
+import { PriorityStatusModule } from './priority-status/priority-status.module';
+import { OrderStatusModule } from './order-status/order-status.module';
+import { ProductStatusModule } from './product-status/product-status.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      ...(getAWMSPostgresConnectionSourceOptions() as any),
-    }),
     KeycloakConnectModule.register({
-      authServerUrl: 'http://localhost:8080/',
-      realm: 'awms',
-      clientId: 'awms-hyperlogic-service-api',
-      secret: '2UTU2KRqYRlKdmC7pZ8TJIep3FPW5kAE',
-      policyEnforcement: PolicyEnforcementMode.PERMISSIVE,
-      tokenValidation: TokenValidation.ONLINE,
+      authServerUrl: process.env.KEYCLOAK_URL,
+      realm: process.env.KEYCLOAK_REALM,
+      clientId: process.env.KEYCLOAK_CLIENT_ID,
+      secret: process.env.KEYCLOAK_CLIENT_SECRET,
+      policyEnforcement: PolicyEnforcementMode.ENFORCING,
+      tokenValidation: TokenValidation.OFFLINE,
     }),
-    // GatewayModule,
     GatewayModule,
     EventEmitterModule.forRoot(),
+    DangerousGoodsModule,
+    CompanyModule,
+    WarehouseModule,
+    AuditModule,
+    CountryModule,
+    PriorityStatusModule,
+    OrderStatusModule,
+    ProductStatusModule,
   ],
   controllers: [],
   providers: [

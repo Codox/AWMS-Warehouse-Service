@@ -11,16 +11,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CompanyService } from '../../company/company.service';
-import { FilterableData } from '../../shared/filterable-data';
-import { Company } from '../../company/company.entity';
-import { BaseResponse } from '../../shared/base.response';
-import { Filterable } from '../../shared/filterable.decorator';
 import { AuthenticatedUser, Roles } from 'nest-keycloak-connect';
-import { CompanyDTO } from '../../company/dto/company.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CompanyCreatedEvent } from '../../company/events/company-created.event';
-import { KeycloakUser } from '../../user/keycloak-user';
+import { CompanyService } from './company.service';
+import { Filterable } from '../shared/filterable.decorator';
+import { FilterableData } from '../shared/filterable-data';
+import { BaseResponse } from '../shared/base.response';
+import { Company } from './company.entity';
+import { CompanyDTO } from './dto/company.dto';
+import { KeycloakUser } from '../user/keycloak-user';
+import { CompanyCreatedEvent } from './events/company-created.event';
 
 @Controller('company')
 @ApiTags('company')

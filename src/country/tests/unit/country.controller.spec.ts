@@ -1,5 +1,5 @@
-import { CountryController } from '../country.controller';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CountryController } from '../../country.controller';
 
 describe('CountryController', () => {
   let controller: CountryController;
@@ -28,15 +28,18 @@ describe('CountryController', () => {
 
   it('GET /country should resolve correctly - 200', async () => {
     const result = await controller.getCounties();
-    expect(result).toContainEqual(testData);
+    expect(result).toHaveProperty('data');
+    expect(result.data).toContainEqual(testData);
   });
 
   it('GET /country/alpha/2/:code should resolve correctly - 200', async () => {
     const resultUpperCase = await controller.getCountryByAlpha2Code('UA');
-    expect(resultUpperCase).toEqual(testData);
+    expect(resultUpperCase).toHaveProperty('data');
+    expect(resultUpperCase.data).toEqual(testData);
 
     const resultNormalCase = await controller.getCountryByAlpha2Code('ua');
-    expect(resultNormalCase).toEqual(testData);
+    expect(resultNormalCase).toHaveProperty('data');
+    expect(resultNormalCase.data).toEqual(testData);
   });
 
   it('GET /country/alpha/2/:code should not resolve correctly (Not found) - 404', async () => {
@@ -46,11 +49,13 @@ describe('CountryController', () => {
   });
 
   it('GET /country/:name should resolve correctly - 200', async () => {
-    const resultForNormalCase = await controller.getCountryByName('Ukraine');
-    expect(resultForNormalCase).toEqual(testData);
+    const resultNormalCase = await controller.getCountryByName('Ukraine');
+    expect(resultNormalCase).toHaveProperty('data');
+    expect(resultNormalCase.data).toEqual(testData);
 
-    const resultForUpperCase = await controller.getCountryByName('UKRAINE');
-    expect(resultForUpperCase).toEqual(testData);
+    const resultUpperCase = await controller.getCountryByName('UKRAINE');
+    expect(resultUpperCase).toHaveProperty('data');
+    expect(resultUpperCase.data).toEqual(testData);
   });
 
   it('GET /country/:name should not resolve correctly (Not found) - 404', async () => {

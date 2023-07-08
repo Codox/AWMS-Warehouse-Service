@@ -1,4 +1,3 @@
-import { CompanyController } from '../../../gateway/controllers/company.controller';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyService } from '../../company.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -7,6 +6,7 @@ import { faker } from '@faker-js/faker';
 import { FilterableData } from '../../../shared/filterable-data';
 import { CompanyRepository } from '../../company.repository';
 import { KeycloakUser } from '../../../user/keycloak-user';
+import { CompanyController } from '../../company.controller';
 
 describe('CompanyController', () => {
   let controller: CompanyController;
