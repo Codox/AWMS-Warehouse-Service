@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OrderStatusRepository } from '../../order-status.repository';
 import { OrderStatus } from '../../order-status.entity';
 import { faker } from '@faker-js/faker';
+import { BadRequestException } from "@nestjs/common";
 
 describe('OrderStatusController', () => {
   let controller: OrderStatusController;
@@ -55,7 +56,11 @@ describe('OrderStatusController', () => {
 
     const result = await controller.getOrderStatuses();
 
-    expect(result).toEqual(defaultOrderStatuses);
+    const baseResponse = {
+      data: defaultOrderStatuses,
+    };
+
+    expect(result).toEqual(baseResponse);
   });
 
   it('GET /order-status/:uuid should resolve correctly - 200', async () => {
@@ -95,7 +100,7 @@ describe('OrderStatusController', () => {
       .mockImplementation(async () => undefined);
 
     await expect(controller.getOrderStatus(orderStatus.uuid)).rejects.toThrow(
-      `Order Status ${orderStatus.uuid} not found`,
+      new BadRequestException(`Order Status ${orderStatus.uuid} not found`),
     );
 
     expect(orderStatusService.getRepository().findOne).toHaveBeenCalledWith({
