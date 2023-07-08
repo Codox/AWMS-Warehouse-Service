@@ -57,28 +57,54 @@ export function mockFindOne(repository: BaseRepository<any>, data: any) {
 export function expectFilterableCalledCorrectly(
   result: any,
   repository: BaseRepository<any>,
-  expectedResponse: {
-    data: any[];
-    count: number;
-    page: number;
-    limit: number;
-  },
   expectedFilterableData: FilterableData,
 ) {
-  expect(result).toEqual(expectedResponse);
   expect(repository.queryWithFilterable).toHaveBeenCalledWith(
     expectedFilterableData,
   );
 }
 
-export function responseToBeCorrect(result: any, data: any) {
+export function expectResponseToBeCorrect(result: any, data: any) {
   expect(result).toEqual({ data: data });
 }
 
+export function expectFilterableResponseToBeCorrect(
+  result: any,
+  expectedData: any[],
+  page: number,
+  limit: number,
+) {
+  expect(result).toEqual({
+    data: expectedData,
+    count: expectedData.length,
+    page,
+    limit,
+  });
+}
 
 export function expectFindOneCalledWithUUID(
   repository: BaseRepository<any>,
-  
+  uuid: string,
 ) {
+  expect(repository.findOne).toHaveBeenCalledWith({
+    where: { uuid },
+  });
+}
 
+export async function expectExceptionToBeThrown(
+  promise: Promise<any>,
+  expectedException: any,
+) {
+  await expect(promise).rejects.toThrow(expectedException);
+}
+
+export function expectEventEmitted(
+  emitter: any,
+  eventName: string,
+  expectedData: any,
+) {
+  expect(emitter.emit).toHaveBeenCalledWith(
+    eventName,
+    expect.objectContaining(expectedData),
+  );
 }
