@@ -4,9 +4,20 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PriorityStatusRepository } from '../../priority-status.repository';
 import { PriorityStatus } from '../../priority-status.entity';
-import { FilterableData } from '../../../shared/filterable-data';
 import { faker } from '@faker-js/faker';
 import { KeycloakUser } from '../../../user/keycloak-user';
+import {
+  createKeycloakUser,
+  expectEventEmitted,
+  expectExceptionToBeThrown,
+  expectFilterableCalledCorrectly,
+  expectFilterableResponseToBeCorrect,
+  expectFindOneCalledWithUUID,
+  expectResponseToBeCorrect,
+  mockFindOne,
+  mockQueryWithFilterable,
+} from '../../../shared/test/unit-test-utilities';
+import { NotFoundException } from '@nestjs/common';
 
 describe('PriorityStatusController', () => {
   let controller: PriorityStatusController;
@@ -63,29 +74,29 @@ describe('PriorityStatusController', () => {
       }),
     ];
 
-    const baseResponse = {
-      data: defaultPriorityStatuses,
-      count: defaultPriorityStatuses.length,
-      page: 1,
-      limit: 10,
-    };
+    mockQueryWithFilterable(
+      priorityStatusService.getRepository(),
+      defaultPriorityStatuses,
+      5,
+      10,
+    );
 
-    jest
-      .spyOn(priorityStatusService.getRepository(), 'queryWithFilterable')
-      .mockImplementation(async () => baseResponse);
-
-    const filterableData: FilterableData = {
+    const result = await controller.getPriorityStatuses({
       fields: [],
-      page: 1,
+      page: 5,
       limit: 10,
-    };
+    });
 
-    const result = await controller.getPriorityStatuses(filterableData);
-
-    expect(result).toEqual(baseResponse);
-    expect(
-      priorityStatusService.getRepository().queryWithFilterable,
-    ).toHaveBeenCalledWith(filterableData);
+    expectFilterableCalledCorrectly(
+      result,
+      priorityStatusService.getRepository(),
+      {
+        fields: [],
+        page: 5,
+        limit: 10,
+      },
+    );
+    expectFilterableResponseToBeCorrect(result, defaultPriorityStatuses, 5, 10);
   });
 
   it('GET /priority-status/:uuid should resolve correctly - 200', async () => {
@@ -96,35 +107,29 @@ describe('PriorityStatusController', () => {
       value: 3,
     });
 
-    const baseResponse = {
-      data: priorityStatus,
-    };
+    mockFindOne(priorityStatusService.getRepository(), priorityStatus);
 
-    jest
-      .spyOn(priorityStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => priorityStatus);
-
-    const result = await controller.getPriorityStatus(priorityStatus.uuid);
-
-    expect(result).toEqual(baseResponse);
-    expect(priorityStatusService.getRepository().findOne).toHaveBeenCalledWith({
-      where: { uuid: priorityStatus.uuid },
-    });
+    expectResponseToBeCorrect(
+      await controller.getPriorityStatus(priorityStatus.uuid),
+      priorityStatus,
+    );
+    expectFindOneCalledWithUUID(
+      priorityStatusService.getRepository(),
+      priorityStatus.uuid,
+    );
   });
 
-  it('GET /company/:uuid should not resolve (Not found) - 404', async () => {
+  it('GET /priority-status/:uuid should not resolve (Not found) - 404', async () => {
     const uuid = faker.string.uuid();
 
-    jest
-      .spyOn(priorityStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => undefined);
+    mockFindOne(priorityStatusService.getRepository(), undefined);
 
-    await expect(controller.getPriorityStatus(uuid)).rejects.toThrow(
-      `Priority Status ${uuid} not found`,
+    await expectExceptionToBeThrown(
+      controller.getPriorityStatus(uuid),
+      new NotFoundException(`Priority Status ${uuid} not found`),
     );
-    expect(priorityStatusService.getRepository().findOne).toHaveBeenCalledWith({
-      where: { uuid },
-    });
+
+    expectFindOneCalledWithUUID(priorityStatusService.getRepository(), uuid);
   });
 
   it('POST /priority-status should resolve correctly - 201', async () => {
@@ -134,28 +139,20 @@ describe('PriorityStatusController', () => {
       value: 3,
     });
 
-    const user: KeycloakUser = {
-      sub: faker.string.uuid(),
-      email: faker.internet.email(),
-    };
-
-    const baseResponse = {
-      data: priorityStatus,
-    };
+    const user: KeycloakUser = createKeycloakUser();
 
     jest
       .spyOn(priorityStatusService, 'createPriorityStatus')
       .mockImplementation(async () => priorityStatus);
 
-    const result = await controller.createPriorityStatus(priorityStatus, user);
-
-    expect(result).toEqual(baseResponse);
-    expect(eventEmitter.emit).toHaveBeenCalledWith(
-      'priority-status.created',
-      expect.objectContaining({
-        priorityStatusUuid: priorityStatus.uuid,
-        userUuid: user.sub,
-      }),
+    expectResponseToBeCorrect(
+      await controller.createPriorityStatus(priorityStatus, user),
+      priorityStatus,
     );
+
+    expectEventEmitted(eventEmitter, 'priority-status.created', {
+      priorityStatusUuid: priorityStatus.uuid,
+      userUuid: user.sub,
+    });
   });
 });

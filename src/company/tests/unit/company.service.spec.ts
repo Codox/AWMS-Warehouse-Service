@@ -49,7 +49,7 @@ describe('CompanyService', () => {
         where: { code: companyData.code },
       });
       expect(companyRepository.save).toHaveBeenCalledWith(expect.any(Company));
-      expect(result).toBe(savedCompany);
+      expect(result).toEqual(savedCompany);
     });
 
     it('Should throw BadRequestException if company already exists with the same code', async () => {

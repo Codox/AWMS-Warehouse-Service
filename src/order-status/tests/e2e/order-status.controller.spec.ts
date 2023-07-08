@@ -8,6 +8,10 @@ import { OrderStatusService } from '../../order-status.service';
 import { HttpModule } from '@nestjs/axios';
 import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
 import { faker } from '@faker-js/faker';
+import {
+  expectEndpointCalledNotFound,
+  expectEndpointCalledSuccessfully,
+} from '../../../shared/test/e2e-test-utilities';
 
 describe('OrderStatusController', () => {
   let app: NestFastifyApplication;
@@ -52,10 +56,9 @@ describe('OrderStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.body).toContain('data');
+        expectEndpointCalledSuccessfully(result);
 
-        expect(JSON.parse(result.body).data.length).toEqual(14);
+        expect(result.json().data.length).toEqual(14);
       });
   });
 
@@ -71,8 +74,7 @@ describe('OrderStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.body).toContain('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.uuid).toEqual(orderStatus.uuid);
       });
   });
@@ -88,13 +90,7 @@ describe('OrderStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(result.json()).toHaveProperty('message');
-        expect(result.json()).toEqual({
-          statusCode: 404,
-          message: `Order Status ${uuid} not found`,
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(result, `Order Status ${uuid} not found`);
       });
   });
 
