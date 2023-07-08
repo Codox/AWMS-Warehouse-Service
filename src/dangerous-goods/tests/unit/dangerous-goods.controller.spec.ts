@@ -13,7 +13,7 @@ import {
   mockFind,
   mockFindOne,
 } from '../../../shared/test/unit-test-utilities';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 describe('DangerousGoodsController', () => {
   let controller: DangerousGoodsController;
@@ -151,7 +151,7 @@ describe('DangerousGoodsController', () => {
 
     await expectExceptionToBeThrown(
       controller.getDangerousGoods(dangerousGoods.uuid),
-      new BadRequestException(
+      new NotFoundException(
         `Dangerous Goods ${dangerousGoods.uuid} not found`,
       ),
     );

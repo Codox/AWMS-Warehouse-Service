@@ -8,6 +8,10 @@ import { DangerousGoodsModule } from '../../dangerous-goods.module';
 import { DangerousGoodsService } from '../../dangerous-goods.service';
 import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
 import { HttpModule } from '@nestjs/axios';
+import {
+  expectEndpointCalledNotFound,
+  expectEndpointCalledSuccessfully,
+} from '../../../shared/test/e2e-test-utilities';
 
 describe('DangerousGoodsController', () => {
   let app: NestFastifyApplication;
@@ -52,8 +56,7 @@ describe('DangerousGoodsController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.body).toContain('data');
+        expectEndpointCalledSuccessfully(result);
 
         /**
          * Check if the length of the dangerous goods is set to a specific length
@@ -86,8 +89,7 @@ describe('DangerousGoodsController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(JSON.parse(result.body)).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
 
         // Check if the dangerous good is the same as the one we fetched
         expect(JSON.parse(result.body).data.uuid).toEqual(dangerousGood.uuid);
@@ -111,14 +113,10 @@ describe('DangerousGoodsController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(JSON.parse(result.body)).toHaveProperty('message');
-
-        expect(JSON.parse(result.body)).toEqual({
-          statusCode: 404,
-          message: `Dangerous Goods ${uuid} not found`,
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(
+          result,
+          `Dangerous Goods ${uuid} not found`,
+        );
       });
   });
 

@@ -4,7 +4,7 @@ import {
   expectExceptionToBeThrown,
   expectResponseToBeCorrect,
 } from '../../../shared/test/unit-test-utilities';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 describe('CountryController', () => {
   let controller: CountryController;
@@ -47,7 +47,7 @@ describe('CountryController', () => {
   it('GET /country/alpha/2/:code should not resolve correctly (Not found) - 404', async () => {
     await expectExceptionToBeThrown(
       controller.getCountryByAlpha2Code('ZZ'),
-      new BadRequestException('Country ZZ not found'),
+      new NotFoundException('Country ZZ not found'),
     );
   });
 
@@ -62,7 +62,7 @@ describe('CountryController', () => {
   it('GET /country/:name should not resolve correctly (Not found) - 404', async () => {
     await expectExceptionToBeThrown(
       controller.getCountryByName('Rexchoppers Kingdom'),
-      new BadRequestException('Country Rexchoppers Kingdom not found'),
+      new NotFoundException('Country Rexchoppers Kingdom not found'),
     );
   });
 

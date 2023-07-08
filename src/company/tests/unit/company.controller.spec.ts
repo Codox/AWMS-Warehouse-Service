@@ -18,7 +18,7 @@ import {
   mockFindOne,
   mockQueryWithFilterable,
 } from '../../../shared/test/unit-test-utilities';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 describe('CompanyController', () => {
   let controller: CompanyController;
@@ -94,7 +94,7 @@ describe('CompanyController', () => {
 
     await expectExceptionToBeThrown(
       controller.getCompany(uuid),
-      new BadRequestException(`Company ${uuid} not found`),
+      new NotFoundException(`Company ${uuid} not found`),
     );
     expectFindOneCalledWithUUID(companyService.getRepository(), uuid);
   });
