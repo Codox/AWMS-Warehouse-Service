@@ -5,6 +5,12 @@ import { PriorityStatusDTO } from '../../dto/priority-status.dto';
 import { PriorityStatus } from '../../priority-status.entity';
 import { BadRequestException } from '@nestjs/common';
 import { faker } from '@faker-js/faker';
+import {
+  expectExceptionToBeThrown,
+  expectFindOneCalledWithUUID,
+  mockFindOne,
+  mockSave,
+} from '../../../shared/test/unit-test-utilities';
 
 describe('PriorityStatusService', () => {
   let priorityStatusService: PriorityStatusService;
@@ -33,7 +39,7 @@ describe('PriorityStatusService', () => {
   });
 
   describe('createPriorityStatus', () => {
-    it('should create a new priority status', async () => {
+    it('Should create a new priority status', async () => {
       const priorityStatusData: PriorityStatusDTO = {
         name: 'Very very high',
         description: 'A very very high priority',
@@ -41,14 +47,10 @@ describe('PriorityStatusService', () => {
       };
 
       const existingPriorityStatus = null;
-      jest
-        .spyOn(priorityStatusRepository, 'findOne')
-        .mockResolvedValue(existingPriorityStatus);
+      mockFindOne(priorityStatusRepository, existingPriorityStatus);
 
       const savedPriorityStatus = new PriorityStatus(priorityStatusData);
-      jest
-        .spyOn(priorityStatusRepository, 'save')
-        .mockResolvedValue(savedPriorityStatus);
+      mockSave(priorityStatusRepository, savedPriorityStatus);
 
       const result = await priorityStatusService.createPriorityStatus(
         priorityStatusData,
@@ -66,7 +68,7 @@ describe('PriorityStatusService', () => {
       expect(result).toEqual(savedPriorityStatus);
     });
 
-    it('should throw an error if a priority status already exists with the same name or value', async () => {
+    it('Should throw an error if a priority status already exists with the same name or value', async () => {
       const priorityStatusData: PriorityStatusDTO = {
         name: 'Very very high',
         description: 'A very very high priority',
@@ -74,13 +76,15 @@ describe('PriorityStatusService', () => {
       };
 
       const existingPriorityStatus = new PriorityStatus(priorityStatusData);
-      jest
-        .spyOn(priorityStatusRepository, 'findOne')
-        .mockResolvedValue(existingPriorityStatus);
+      mockFindOne(priorityStatusRepository, existingPriorityStatus);
 
-      await expect(
+      await expectExceptionToBeThrown(
         priorityStatusService.createPriorityStatus(priorityStatusData),
-      ).rejects.toThrowError(BadRequestException);
+        new BadRequestException(
+          `Conflicting priority status existing with name ${priorityStatusData.name} or value ${priorityStatusData.value}`,
+        ),
+      );
+
       expect(priorityStatusRepository.findOne).toHaveBeenCalledWith({
         where: [
           { name: priorityStatusData.name },
@@ -92,7 +96,7 @@ describe('PriorityStatusService', () => {
   });
 
   describe('updatePriorityStatus', () => {
-    it('should update an existing priority status', async () => {
+    it('Should update an existing priority status', async () => {
       const existingPriorityStatus = new PriorityStatus({
         uuid: faker.string.uuid(),
         name: 'Critical',
@@ -113,14 +117,12 @@ describe('PriorityStatusService', () => {
         value: 900,
       });
 
-      jest
-        .spyOn(priorityStatusRepository, 'findOne')
-        .mockResolvedValueOnce(existingPriorityStatus)
-        .mockResolvedValueOnce(undefined);
+      mockFindOne(priorityStatusRepository, [
+        existingPriorityStatus,
+        undefined,
+      ]);
 
-      jest
-        .spyOn(priorityStatusRepository, 'save')
-        .mockResolvedValueOnce(expectedUpdatedPriorityStatus);
+      mockSave(priorityStatusRepository, expectedUpdatedPriorityStatus);
 
       const oldNewPriorityService =
         await priorityStatusService.updatePriorityStatus(
@@ -134,25 +136,54 @@ describe('PriorityStatusService', () => {
       });
     });
 
-    it('should throw an error if a priority status does not exist', async () => {
-      jest
-        .spyOn(priorityStatusRepository, 'findOne')
-        .mockResolvedValueOnce(undefined);
+    it('Should throw an error if a priority status does not exist', async () => {
+      mockFindOne(priorityStatusRepository, undefined);
 
       const uuid = faker.string.uuid();
 
-      await expect(
+      await expectExceptionToBeThrown(
         priorityStatusService.updatePriorityStatus(
           uuid,
           new PriorityStatusDTO(),
         ),
-      ).rejects.toThrowError(
         new BadRequestException(`Priority Status ${uuid} not found`),
       );
+      expectFindOneCalledWithUUID(priorityStatusRepository, uuid);
+    });
 
-      expect(priorityStatusRepository.findOne).toHaveBeenCalledWith({
-        where: { uuid },
+    it('Should throw an error if a priority status already exists with the same name or value', async () => {
+      const existingPriorityStatus = new PriorityStatus({
+        uuid: faker.string.uuid(),
+        name: 'Critical',
+        description: 'A critical priority',
+        value: 999,
       });
+
+      const priorityStatusWithSameNameOrValue: PriorityStatusDTO = {
+        name: 'Mid-Critical',
+        description: 'Slightly under critical',
+        value: 999,
+      };
+
+      const priorityStatusDataToUpdate: PriorityStatusDTO = {
+        name: 'Mid',
+        value: 999,
+      };
+
+      mockFindOne(priorityStatusRepository, [
+        existingPriorityStatus,
+        priorityStatusWithSameNameOrValue,
+      ]);
+
+      await expectExceptionToBeThrown(
+        priorityStatusService.updatePriorityStatus(
+          existingPriorityStatus.uuid,
+          priorityStatusDataToUpdate,
+        ),
+        new BadRequestException(
+          `Conflicting priority status existing with name ${priorityStatusDataToUpdate.name} or value ${priorityStatusDataToUpdate.value}`,
+        ),
+      );
     });
   });
 });

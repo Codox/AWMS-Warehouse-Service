@@ -7,6 +7,13 @@ import { DangerousGoodsRepository } from '../../dangerous-goods.repository';
 import { DangerousGoodsClassificationRepository } from '../../dangerous-goods-classification.repository';
 import { DangerousGoods } from '../../dangerous-goods.entity';
 import { DangerousGoodsClassification } from '../../dangerous-goods-classification.entity';
+import {
+  expectExceptionToBeThrown,
+  expectResponseToBeCorrect,
+  mockFind,
+  mockFindOne,
+} from '../../../shared/test/unit-test-utilities';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('DangerousGoodsController', () => {
   let controller: DangerousGoodsController;
@@ -80,17 +87,11 @@ describe('DangerousGoodsController', () => {
       }),
     ];
 
-    jest
-      .spyOn(dangerousGoodsService.getRepository(), 'find')
-      .mockImplementation(async () => defaultDangerousGoods);
+    mockFind(dangerousGoodsService.getRepository(), defaultDangerousGoods);
 
     const result = await controller.getDangerousGoodsList();
 
-    const baseResponse = {
-      data: defaultDangerousGoods,
-    };
-
-    expect(result).toEqual(baseResponse);
+    expectResponseToBeCorrect(result, defaultDangerousGoods);
   });
 
   it('GET /dangerous-goods/:uuid should resolve correctly - 200', async () => {
@@ -114,16 +115,11 @@ describe('DangerousGoodsController', () => {
       ],
     });
 
-    const baseResponse = {
-      data: dangerousGoods,
-    };
-
-    jest
-      .spyOn(dangerousGoodsService.getRepository(), 'findOne')
-      .mockImplementation(async () => dangerousGoods);
+    mockFindOne(dangerousGoodsService.getRepository(), dangerousGoods);
 
     const result = await controller.getDangerousGoods(dangerousGoods.uuid);
-    expect(result).toEqual(baseResponse);
+
+    expectResponseToBeCorrect(result, dangerousGoods);
     expect(dangerousGoodsService.getRepository().findOne).toHaveBeenCalledWith({
       where: { uuid: dangerousGoods.uuid },
       relations: ['classifications'],
@@ -151,13 +147,13 @@ describe('DangerousGoodsController', () => {
       ],
     });
 
-    jest
-      .spyOn(dangerousGoodsService.getRepository(), 'findOne')
-      .mockImplementation(async () => undefined);
+    mockFindOne(dangerousGoodsService.getRepository(), undefined);
 
-    await expect(
+    await expectExceptionToBeThrown(
       controller.getDangerousGoods(dangerousGoods.uuid),
-    ).rejects.toThrow(`Dangerous Goods ${dangerousGoods.uuid} not found`);
+      new NotFoundException(`Dangerous Goods ${dangerousGoods.uuid} not found`),
+    );
+
     expect(dangerousGoodsService.getRepository().findOne).toHaveBeenCalledWith({
       where: { uuid: dangerousGoods.uuid },
       relations: ['classifications'],

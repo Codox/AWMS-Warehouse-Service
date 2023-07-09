@@ -9,6 +9,11 @@ import { PriorityStatusModule } from '../../priority-status.module';
 import { HttpModule } from '@nestjs/axios';
 import { faker } from '@faker-js/faker';
 import { PriorityStatus } from '../../priority-status.entity';
+import {
+  expectEndpointCalledNotFound,
+  expectEndpointCalledSuccessfully,
+} from '../../../shared/test/e2e-test-utilities';
+import { ValidationPipe } from '@nestjs/common';
 
 function createPriorityStatus() {
   return new PriorityStatus({
@@ -33,6 +38,8 @@ describe('PriorityStatusController', () => {
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
+
+    app.useGlobalPipes(new ValidationPipe());
 
     service = moduleRef.get<PriorityStatusService>(PriorityStatusService);
     e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
@@ -62,8 +69,7 @@ describe('PriorityStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.length).toEqual(3);
       });
   });
@@ -80,8 +86,7 @@ describe('PriorityStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.uuid);
       });
   });
@@ -98,14 +103,10 @@ describe('PriorityStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(JSON.parse(result.body)).toHaveProperty('message');
-
-        expect(JSON.parse(result.body)).toEqual({
-          statusCode: 404,
-          message: `Priority Status ${uuid} not found`,
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(
+          result,
+          `Priority Status ${uuid} not found`,
+        );
       });
   });
 
@@ -122,8 +123,7 @@ describe('PriorityStatusController', () => {
         },
       })
       .then(async (result) => {
-        expect(result.statusCode).toEqual(201);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result, 201);
         expect(result.json().data.uuid).toEqual(priorityStatusData.uuid);
 
         const priorityStatus = await service.getRepository().findOne({
@@ -133,6 +133,24 @@ describe('PriorityStatusController', () => {
         });
 
         expect(priorityStatus).not.toBeNull();
+      });
+  });
+
+  it('POST /priority-status should not resolve correctly - 400 (Validation Error)', async () => {
+    const priorityStatusData = createPriorityStatus();
+    delete priorityStatusData.value;
+
+    return app
+      .inject({
+        method: 'POST',
+        url: `/priority-status`,
+        payload: priorityStatusData,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
+      })
+      .then(async (result) => {
+        expect(result.statusCode).toEqual(400);
       });
   });
 
@@ -154,8 +172,8 @@ describe('PriorityStatusController', () => {
         },
       })
       .then(async (result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
+
         expect(result.json().data.value).toEqual(500);
         expect(result.json().data.name).toEqual(
           priorityStatusToUpdate.name + ' Updated',

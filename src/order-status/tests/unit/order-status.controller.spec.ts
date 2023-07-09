@@ -4,7 +4,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OrderStatusRepository } from '../../order-status.repository';
 import { OrderStatus } from '../../order-status.entity';
 import { faker } from '@faker-js/faker';
-import { BadRequestException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
+import {
+  expectExceptionToBeThrown,
+  expectFindOneCalledWithUUID,
+  expectResponseToBeCorrect,
+  mockFind,
+  mockFindOne,
+} from '../../../shared/test/unit-test-utilities';
 
 describe('OrderStatusController', () => {
   let controller: OrderStatusController;
@@ -19,6 +26,7 @@ describe('OrderStatusController', () => {
           provide: OrderStatusRepository,
           useValue: {
             findOne: jest.fn(),
+            find: jest.fn(),
           },
         },
       ],
@@ -50,17 +58,11 @@ describe('OrderStatusController', () => {
       }),
     ];
 
-    jest
-      .spyOn(orderStatusService, 'getAll')
-      .mockImplementation(async () => defaultOrderStatuses);
+    mockFind(orderStatusService.getRepository(), defaultOrderStatuses);
 
     const result = await controller.getOrderStatuses();
 
-    const baseResponse = {
-      data: defaultOrderStatuses,
-    };
-
-    expect(result).toEqual(baseResponse);
+    expectResponseToBeCorrect(result, defaultOrderStatuses);
   });
 
   it('GET /order-status/:uuid should resolve correctly - 200', async () => {
@@ -71,20 +73,15 @@ describe('OrderStatusController', () => {
         'The item is currently out of stock in the warehouse. It is on hold until new stock arrives to fulfill the order.',
     });
 
-    const baseResponse = {
-      data: orderStatus,
-    };
-
-    jest
-      .spyOn(orderStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => orderStatus);
+    mockFindOne(orderStatusService.getRepository(), orderStatus);
 
     const result = await controller.getOrderStatus(orderStatus.uuid);
 
-    expect(result).toEqual(baseResponse);
-    expect(orderStatusService.getRepository().findOne).toHaveBeenCalledWith({
-      where: { uuid: orderStatus.uuid },
-    });
+    expectResponseToBeCorrect(result, orderStatus);
+    expectFindOneCalledWithUUID(
+      orderStatusService.getRepository(),
+      orderStatus.uuid,
+    );
   });
 
   it('GET /order-status/:uuid should not resolve correctly - 404', async () => {
@@ -95,12 +92,11 @@ describe('OrderStatusController', () => {
         'The item is currently out of stock in the warehouse. It is on hold until new stock arrives to fulfill the order.',
     });
 
-    jest
-      .spyOn(orderStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => undefined);
+    mockFindOne(orderStatusService.getRepository(), undefined);
 
-    await expect(controller.getOrderStatus(orderStatus.uuid)).rejects.toThrow(
-      new BadRequestException(`Order Status ${orderStatus.uuid} not found`),
+    await expectExceptionToBeThrown(
+      controller.getOrderStatus(orderStatus.uuid),
+      new NotFoundException(`Order Status ${orderStatus.uuid} not found`),
     );
 
     expect(orderStatusService.getRepository().findOne).toHaveBeenCalledWith({

@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CountryController } from '../../country.controller';
+import {
+  expectExceptionToBeThrown,
+  expectResponseToBeCorrect,
+} from '../../../shared/test/unit-test-utilities';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 describe('CountryController', () => {
   let controller: CountryController;
@@ -28,40 +33,37 @@ describe('CountryController', () => {
 
   it('GET /country should resolve correctly - 200', async () => {
     const result = await controller.getCounties();
-    expect(result).toHaveProperty('data');
     expect(result.data).toContainEqual(testData);
   });
 
   it('GET /country/alpha/2/:code should resolve correctly - 200', async () => {
     const resultUpperCase = await controller.getCountryByAlpha2Code('UA');
-    expect(resultUpperCase).toHaveProperty('data');
-    expect(resultUpperCase.data).toEqual(testData);
+    expectResponseToBeCorrect(resultUpperCase, testData);
 
     const resultNormalCase = await controller.getCountryByAlpha2Code('ua');
-    expect(resultNormalCase).toHaveProperty('data');
-    expect(resultNormalCase.data).toEqual(testData);
+    expectResponseToBeCorrect(resultNormalCase, testData);
   });
 
   it('GET /country/alpha/2/:code should not resolve correctly (Not found) - 404', async () => {
-    await expect(controller.getCountryByAlpha2Code('ZZ')).rejects.toThrow(
-      `Country ZZ not found`,
+    await expectExceptionToBeThrown(
+      controller.getCountryByAlpha2Code('ZZ'),
+      new NotFoundException('Country ZZ not found'),
     );
   });
 
   it('GET /country/:name should resolve correctly - 200', async () => {
     const resultNormalCase = await controller.getCountryByName('Ukraine');
-    expect(resultNormalCase).toHaveProperty('data');
-    expect(resultNormalCase.data).toEqual(testData);
+    expectResponseToBeCorrect(resultNormalCase, testData);
 
     const resultUpperCase = await controller.getCountryByName('UKRAINE');
-    expect(resultUpperCase).toHaveProperty('data');
-    expect(resultUpperCase.data).toEqual(testData);
+    expectResponseToBeCorrect(resultUpperCase, testData);
   });
 
   it('GET /country/:name should not resolve correctly (Not found) - 404', async () => {
-    await expect(
+    await expectExceptionToBeThrown(
       controller.getCountryByName('Rexchoppers Kingdom'),
-    ).rejects.toThrow(`Country Rexchoppers Kingdom not found`);
+      new NotFoundException('Country Rexchoppers Kingdom not found'),
+    );
   });
 
   it('Should format country correctly', async () => {

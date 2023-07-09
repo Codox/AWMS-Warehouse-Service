@@ -4,7 +4,12 @@ import { CompanyService } from '../../company.service';
 import { CompanyRepository } from '../../company.repository';
 import { CompanyDTO } from '../../dto/company.dto';
 import { Company } from '../../company.entity';
-import { faker } from '@faker-js/faker';
+import {
+  createCompanyDTO,
+  expectExceptionToBeThrown,
+  mockFindOne,
+  mockSave,
+} from '../../../shared/test/unit-test-utilities';
 
 describe('CompanyService', () => {
   let companyService: CompanyService;
@@ -29,29 +34,14 @@ describe('CompanyService', () => {
   });
 
   describe('createCompany', () => {
-    it('should create a new company', async () => {
-      const companyData: CompanyDTO = {
-        name: faker.company.name(),
-        code: 'TEST',
-        contactTelephone: faker.phone.number('+44##########'),
-        addressLines: [
-          faker.location.streetAddress(),
-          faker.location.secondaryAddress(),
-        ],
-        town: faker.location.city(),
-        region: faker.location.state(),
-        city: faker.location.city(),
-        zipCode: faker.location.zipCode(),
-        country: faker.location.country(),
-      };
+    it('Should create a new company', async () => {
+      const companyData: CompanyDTO = createCompanyDTO();
 
       const existingCompany = null;
-      jest
-        .spyOn(companyRepository, 'findOne')
-        .mockResolvedValue(existingCompany);
+      mockFindOne(companyRepository, existingCompany);
 
       const savedCompany = new Company(companyData);
-      jest.spyOn(companyRepository, 'save').mockResolvedValue(savedCompany);
+      mockSave(companyRepository, savedCompany);
 
       const result = await companyService.createCompany(companyData);
 
@@ -59,33 +49,22 @@ describe('CompanyService', () => {
         where: { code: companyData.code },
       });
       expect(companyRepository.save).toHaveBeenCalledWith(expect.any(Company));
-      expect(result).toBe(savedCompany);
+      expect(result).toEqual(savedCompany);
     });
 
     it('Should throw BadRequestException if company already exists with the same code', async () => {
-      const companyData: CompanyDTO = {
-        name: faker.company.name(),
-        code: 'TEST',
-        contactTelephone: faker.phone.number('+44##########'),
-        addressLines: [
-          faker.location.streetAddress(),
-          faker.location.secondaryAddress(),
-        ],
-        town: faker.location.city(),
-        region: faker.location.state(),
-        city: faker.location.city(),
-        zipCode: faker.location.zipCode(),
-        country: faker.location.country(),
-      };
+      const companyData: CompanyDTO = createCompanyDTO();
 
       const existingCompany = new Company(companyData);
-      jest
-        .spyOn(companyRepository, 'findOne')
-        .mockResolvedValue(existingCompany);
+      mockFindOne(companyRepository, existingCompany);
 
-      await expect(
+      await expectExceptionToBeThrown(
         companyService.createCompany(companyData),
-      ).rejects.toThrowError(BadRequestException);
+        new BadRequestException(
+          `Company already exists with code ${existingCompany.code}`,
+        ),
+      );
+
       expect(companyRepository.findOne).toHaveBeenCalledWith({
         where: { code: companyData.code },
       });

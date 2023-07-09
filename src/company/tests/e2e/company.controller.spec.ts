@@ -9,7 +9,11 @@ import { Company } from '../../company.entity';
 import { faker } from '@faker-js/faker';
 import { HttpModule } from '@nestjs/axios';
 import { E2ETestingService } from '../../../shared/test/e2e/e2e-testing.service';
-import { AuditModule } from '../../../audit/audit.module';
+import {
+  expectEndpointCalledNotFound,
+  expectEndpointCalledSuccessfully,
+} from '../../../shared/test/e2e-test-utilities';
+import { ValidationPipe } from '@nestjs/common';
 
 function createValidCompany() {
   return new Company({
@@ -36,13 +40,15 @@ describe('CompanyController', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [CompanyModule, AuditModule, HttpModule],
+      imports: [CompanyModule, HttpModule],
       providers: [E2ETestingService],
     }).compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
+
+    app.useGlobalPipes(new ValidationPipe());
 
     companyService = moduleRef.get<CompanyService>(CompanyService);
     e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
@@ -76,8 +82,7 @@ describe('CompanyController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.length).toEqual(1);
         expect(result.json().data[0].uuid).toEqual(company.uuid);
       });
@@ -97,8 +102,7 @@ describe('CompanyController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.uuid).toEqual(company.uuid);
       });
   });
@@ -116,8 +120,7 @@ describe('CompanyController', () => {
         },
       })
       .then(async (result) => {
-        expect(result.statusCode).toEqual(201);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result, 201);
         expect(result.json().data.uuid).toEqual(companyData.uuid);
 
         const company = await companyService.getRepository().findOne({
@@ -127,6 +130,24 @@ describe('CompanyController', () => {
         });
 
         expect(company).not.toBeNull();
+      });
+  });
+
+  it('POST /company should not resolve correctly - 400', async () => {
+    const companyData = createValidCompany();
+    delete companyData.name;
+
+    return app
+      .inject({
+        method: 'POST',
+        url: `/company`,
+        payload: companyData,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
+      })
+      .then(async (result) => {
+        expect(result.statusCode).toEqual(400);
       });
   });
 
@@ -141,13 +162,7 @@ describe('CompanyController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(result.json()).toHaveProperty('message');
-        expect(result.json()).toEqual({
-          statusCode: 404,
-          message: `Company ${uuid} not found`,
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(result, `Company ${uuid} not found`);
       });
   });
 

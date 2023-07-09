@@ -26,7 +26,6 @@ export class E2ETestingService {
         )
         .pipe(
           catchError((error) => {
-            console.log(error);
             // this.logger.error(error.response.data);
             throw 'An error happened!';
           }),
