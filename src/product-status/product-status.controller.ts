@@ -22,8 +22,8 @@ export class ProductStatusController {
   @Get('/')
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
-  async getProductStatuses(): Promise<ProductStatus[]> {
-    return await this.productStatusService.getRepository().find();
+  async getProductStatuses(): Promise<{ data: ProductStatus[] }> {
+    return { data: await this.productStatusService.getRepository().find() };
   }
 
   @Get('/:uuid')
