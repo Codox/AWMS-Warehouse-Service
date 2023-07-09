@@ -9,6 +9,10 @@ import { PriorityStatusModule } from '../../priority-status.module';
 import { HttpModule } from '@nestjs/axios';
 import { faker } from '@faker-js/faker';
 import { PriorityStatus } from '../../priority-status.entity';
+import {
+  expectEndpointCalledNotFound,
+  expectEndpointCalledSuccessfully,
+} from '../../../shared/test/e2e-test-utilities';
 
 function createPriorityStatus() {
   return new PriorityStatus({
@@ -62,8 +66,7 @@ describe('PriorityStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.length).toEqual(3);
       });
   });
@@ -80,8 +83,7 @@ describe('PriorityStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
         expect(result.json().data.uuid);
       });
   });
@@ -98,14 +100,10 @@ describe('PriorityStatusController', () => {
         },
       })
       .then((result) => {
-        expect(result.statusCode).toEqual(404);
-        expect(JSON.parse(result.body)).toHaveProperty('message');
-
-        expect(JSON.parse(result.body)).toEqual({
-          statusCode: 404,
-          message: `Priority Status ${uuid} not found`,
-          error: 'Not Found',
-        });
+        expectEndpointCalledNotFound(
+          result,
+          `Priority Status ${uuid} not found`,
+        );
       });
   });
 
@@ -122,8 +120,7 @@ describe('PriorityStatusController', () => {
         },
       })
       .then(async (result) => {
-        expect(result.statusCode).toEqual(201);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result, 201);
         expect(result.json().data.uuid).toEqual(priorityStatusData.uuid);
 
         const priorityStatus = await service.getRepository().findOne({
@@ -154,8 +151,8 @@ describe('PriorityStatusController', () => {
         },
       })
       .then(async (result) => {
-        expect(result.statusCode).toEqual(200);
-        expect(result.json()).toHaveProperty('data');
+        expectEndpointCalledSuccessfully(result);
+
         expect(result.json().data.value).toEqual(500);
         expect(result.json().data.name).toEqual(
           priorityStatusToUpdate.name + ' Updated',
