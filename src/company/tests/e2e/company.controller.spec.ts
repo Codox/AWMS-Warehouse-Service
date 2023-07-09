@@ -147,7 +147,6 @@ describe('CompanyController', () => {
         },
       })
       .then(async (result) => {
-        console.log(result.json());
         expect(result.statusCode).toEqual(400);
       });
   });
