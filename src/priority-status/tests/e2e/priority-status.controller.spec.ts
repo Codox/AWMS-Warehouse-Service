@@ -13,6 +13,7 @@ import {
   expectEndpointCalledNotFound,
   expectEndpointCalledSuccessfully,
 } from '../../../shared/test/e2e-test-utilities';
+import { ValidationPipe } from '@nestjs/common';
 
 function createPriorityStatus() {
   return new PriorityStatus({
@@ -37,6 +38,8 @@ describe('PriorityStatusController', () => {
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
+
+    app.useGlobalPipes(new ValidationPipe());
 
     service = moduleRef.get<PriorityStatusService>(PriorityStatusService);
     e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
@@ -130,6 +133,24 @@ describe('PriorityStatusController', () => {
         });
 
         expect(priorityStatus).not.toBeNull();
+      });
+  });
+
+  it('POST /priority-status should not resolve correctly - 400 (Validation Error)', async () => {
+    const priorityStatusData = createPriorityStatus();
+    delete priorityStatusData.value;
+
+    return app
+      .inject({
+        method: 'POST',
+        url: `/priority-status`,
+        payload: priorityStatusData,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
+      })
+      .then(async (result) => {
+        expect(result.statusCode).toEqual(400);
       });
   });
 
