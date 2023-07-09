@@ -23,7 +23,7 @@ export class ProductStatusController {
   @Roles({ roles: ['realm:super_admin'] })
   @HttpCode(HttpStatus.OK)
   async getProductStatuses(): Promise<ProductStatus[]> {
-    return await this.productStatusService.getAll();
+    return await this.productStatusService.getRepository().find();
   }
 
   @Get('/:uuid')

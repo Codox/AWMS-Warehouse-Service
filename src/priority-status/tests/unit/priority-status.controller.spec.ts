@@ -119,7 +119,7 @@ describe('PriorityStatusController', () => {
     );
   });
 
-  it('GET /priority-status/:uuid should not resolve (Not found) - 404', async () => {
+  it('GET /priority-status/:uuid should not resolve - 404', async () => {
     const uuid = faker.string.uuid();
 
     mockFindOne(priorityStatusService.getRepository(), undefined);

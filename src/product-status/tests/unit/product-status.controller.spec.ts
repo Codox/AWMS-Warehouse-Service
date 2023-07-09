@@ -4,6 +4,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProductStatusRepository } from '../../product-status.repository';
 import { faker } from '@faker-js/faker';
 import { ProductStatus } from '../../product-status.entity';
+import {
+  expectExceptionToBeThrown,
+  expectFindOneCalledWithUUID,
+  expectResponseToBeCorrect,
+  mockFind,
+  mockFindOne,
+} from '../../../shared/test/unit-test-utilities';
+import { NotFoundException } from '@nestjs/common';
 
 describe('ProductStatusController', () => {
   let controller: ProductStatusController;
@@ -18,6 +26,7 @@ describe('ProductStatusController', () => {
           provide: ProductStatusRepository,
           useValue: {
             findOne: jest.fn(),
+            find: jest.fn(),
           },
         },
       ],
@@ -47,13 +56,11 @@ describe('ProductStatusController', () => {
       }),
     ];
 
-    jest
-      .spyOn(productStatusService, 'getAll')
-      .mockImplementation(async () => defaultProductStatuses);
+    mockFind(productStatusService.getRepository(), defaultProductStatuses);
 
     const result = await controller.getProductStatuses();
 
-    expect(result).toEqual(defaultProductStatuses);
+    expectResponseToBeCorrect(result, defaultProductStatuses);
   });
 
   it('GET /product-status/:uuid should resolve correctly - 200', async () => {
@@ -64,20 +71,17 @@ describe('ProductStatusController', () => {
         'The product is currently available in the warehouse and ready for sale.',
     });
 
-    const baseResponse = {
-      data: productStatus,
-    };
+    mockFindOne(productStatusService.getRepository(), productStatus);
 
-    jest
-      .spyOn(productStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => productStatus);
+    expectResponseToBeCorrect(
+      await controller.getProductStatus(productStatus.uuid),
+      productStatus,
+    );
 
-    const result = await controller.getProductStatus(productStatus.uuid);
-
-    expect(result).toEqual(baseResponse);
-    expect(productStatusService.getRepository().findOne).toHaveBeenCalledWith({
-      where: { uuid: productStatus.uuid },
-    });
+    expectFindOneCalledWithUUID(
+      productStatusService.getRepository(),
+      productStatus.uuid,
+    );
   });
 
   it('GET /product-status/:uuid should not resolve correctly - 404', async () => {
@@ -88,16 +92,16 @@ describe('ProductStatusController', () => {
         'The item is currently out of stock in the warehouse. It is on hold until new stock arrives to fulfill the order.',
     });
 
-    jest
-      .spyOn(productStatusService.getRepository(), 'findOne')
-      .mockImplementation(async () => undefined);
+    mockFindOne(productStatusService.getRepository(), undefined);
 
-    await expect(
+    await expectExceptionToBeThrown(
       controller.getProductStatus(productStatus.uuid),
-    ).rejects.toThrow(`Product Status ${productStatus.uuid} not found`);
+      new NotFoundException(`Product Status ${productStatus.uuid} not found`),
+    );
 
-    expect(productStatusService.getRepository().findOne).toHaveBeenCalledWith({
-      where: { uuid: productStatus.uuid },
-    });
+    expectFindOneCalledWithUUID(
+      productStatusService.getRepository(),
+      productStatus.uuid,
+    );
   });
 });
