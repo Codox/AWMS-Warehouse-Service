@@ -13,6 +13,7 @@ import {
   expectEndpointCalledNotFound,
   expectEndpointCalledSuccessfully,
 } from '../../../shared/test/e2e-test-utilities';
+import { ValidationPipe } from '@nestjs/common';
 
 function createValidCompany() {
   return new Company({
@@ -46,6 +47,8 @@ describe('CompanyController', () => {
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
+
+    app.useGlobalPipes(new ValidationPipe());
 
     companyService = moduleRef.get<CompanyService>(CompanyService);
     e2eTestingService = moduleRef.get<E2ETestingService>(E2ETestingService);
@@ -127,6 +130,25 @@ describe('CompanyController', () => {
         });
 
         expect(company).not.toBeNull();
+      });
+  });
+
+  it('POST /company should not resolve correctly - 400', async () => {
+    const companyData = createValidCompany();
+    delete companyData.name;
+
+    return app
+      .inject({
+        method: 'POST',
+        url: `/company`,
+        payload: companyData,
+        headers: {
+          Authorization: 'Bearer ' + (await e2eTestingService.getAccessToken()),
+        },
+      })
+      .then(async (result) => {
+        console.log(result.json());
+        expect(result.statusCode).toEqual(400);
       });
   });
 
