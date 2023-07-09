@@ -4,6 +4,7 @@ import { KeycloakUser } from '../../user/keycloak-user';
 import { BaseRepository } from '../base.repository';
 import { FilterableData } from '../filterable-data';
 import { CompanyDTO } from '../../company/dto/company.dto';
+import { WarehouseDTO } from "../../warehouse/dto/warehouse.dto";
 
 export function createCompany(): Company {
   return new Company({
@@ -28,6 +29,22 @@ export function createCompanyDTO(): CompanyDTO {
   return {
     name: faker.company.name(),
     code: 'TEST',
+    contactTelephone: faker.phone.number('+44##########'),
+    addressLines: [
+      faker.location.streetAddress(),
+      faker.location.secondaryAddress(),
+    ],
+    town: faker.location.city(),
+    region: faker.location.state(),
+    city: faker.location.city(),
+    zipCode: faker.location.zipCode(),
+    country: faker.location.country(),
+  };
+}
+
+export function createWarehouseDTO(): WarehouseDTO {
+  return {
+    name: faker.company.name(),
     contactTelephone: faker.phone.number('+44##########'),
     addressLines: [
       faker.location.streetAddress(),

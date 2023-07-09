@@ -2,8 +2,11 @@ import { Test } from '@nestjs/testing';
 import { WarehouseService } from '../../warehouse.service';
 import { WarehouseRepository } from '../../warehouse.repository';
 import { WarehouseDTO } from '../../dto/warehouse.dto';
-import { faker } from '@faker-js/faker';
 import { Warehouse } from '../../warehouse.entity';
+import {
+  createWarehouseDTO,
+  mockSave,
+} from '../../../shared/test/unit-test-utilities';
 
 describe('WarehouseService', () => {
   let warehouseService: WarehouseService;
@@ -29,29 +32,17 @@ describe('WarehouseService', () => {
 
   describe('createWarehouse', () => {
     it('Should create a new warehouse', async () => {
-      const warehouseData: WarehouseDTO = {
-        name: faker.company.name(),
-        contactTelephone: faker.phone.number('+44##########'),
-        addressLines: [
-          faker.location.streetAddress(),
-          faker.location.secondaryAddress(),
-        ],
-        town: faker.location.city(),
-        region: faker.location.state(),
-        city: faker.location.city(),
-        zipCode: faker.location.zipCode(),
-        country: faker.location.country(),
-      };
+      const warehouseData: WarehouseDTO = createWarehouseDTO();
 
       const savedWarehouse = new Warehouse(warehouseData);
-      jest.spyOn(warehouseRepository, 'save').mockResolvedValue(savedWarehouse);
+      mockSave(warehouseRepository, savedWarehouse);
 
       const result = await warehouseService.createWarehouse(warehouseData);
 
       expect(warehouseRepository.save).toHaveBeenCalledWith(
         expect.any(Warehouse),
       );
-      expect(result).toBe(savedWarehouse);
+      expect(result).toEqual(savedWarehouse);
     });
   });
 });
