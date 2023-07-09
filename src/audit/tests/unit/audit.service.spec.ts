@@ -3,6 +3,7 @@ import { AuditService } from '../../audit.service';
 import { AuditRepository } from '../../audit.repository';
 import { Audit } from '../../audit.entity';
 import { faker } from '@faker-js/faker';
+import { mockSave } from '../../../shared/test/unit-test-utilities';
 
 describe('AuditService', () => {
   let auditService: AuditService;
@@ -37,14 +38,14 @@ describe('AuditService', () => {
       };
 
       const createdAudit = new Audit(auditData);
-      jest.spyOn(auditRepository, 'save').mockResolvedValue(createdAudit);
+      mockSave(auditRepository, createdAudit);
 
       const result = await auditService.createAuditEntry(auditData);
 
       expect(auditRepository.save).toHaveBeenCalledWith(
         expect.objectContaining(auditData),
       );
-      expect(result).toBe(createdAudit);
+      expect(result).toEqual(createdAudit);
     });
   });
 });
