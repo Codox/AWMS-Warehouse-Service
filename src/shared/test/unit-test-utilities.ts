@@ -5,6 +5,7 @@ import { BaseRepository } from '../base.repository';
 import { FilterableData } from '../filterable-data';
 import { CompanyDTO } from '../../company/dto/company.dto';
 import { WarehouseDTO } from "../../warehouse/dto/warehouse.dto";
+import { Warehouse } from "../../warehouse/warehouse.entity";
 
 export function createCompany(): Company {
   return new Company({
@@ -14,6 +15,21 @@ export function createCompany(): Company {
     description: faker.lorem.paragraph(),
     vatNumber: faker.finance.accountNumber(),
     eoriNumber: faker.finance.accountNumber(),
+    contactTelephone: faker.phone.number('+44##########'),
+
+    addressLines: [faker.location.streetAddress({ useFullAddress: true })],
+    town: faker.location.city(),
+    region: faker.location.state(),
+    city: faker.location.city(),
+    zipCode: faker.location.zipCode(),
+    country: faker.location.countryCode(),
+  });
+}
+
+export function createWarehouse(): Warehouse {
+  return new Warehouse({
+    uuid: faker.string.uuid(),
+    name: faker.company.name(),
     contactTelephone: faker.phone.number('+44##########'),
 
     addressLines: [faker.location.streetAddress({ useFullAddress: true })],
