@@ -5,8 +5,10 @@ import { WarehouseDTO } from '../../dto/warehouse.dto';
 import { Warehouse } from '../../warehouse.entity';
 import {
   createWarehouseDTO,
+  mockFindOne,
   mockSave,
 } from '../../../shared/test/unit-test-utilities';
+import { faker } from '@faker-js/faker';
 
 describe('WarehouseService', () => {
   let warehouseService: WarehouseService;
@@ -43,6 +45,46 @@ describe('WarehouseService', () => {
         expect.any(Warehouse),
       );
       expect(result).toEqual(savedWarehouse);
+    });
+  });
+
+  describe('updateWarehouse', () => {
+    it('Should update a warehouse', async () => {
+      const existingWarehouse = new Warehouse(createWarehouseDTO());
+
+      const warehouseDataForUpdate: WarehouseDTO = createWarehouseDTO();
+      warehouseDataForUpdate.name = 'Updated Name';
+
+      mockFindOne(warehouseRepository, existingWarehouse);
+
+      const updatedWarehouse = new Warehouse(warehouseDataForUpdate);
+      mockSave(warehouseRepository, updatedWarehouse);
+
+      const result = await warehouseService.updateWarehouse(
+        existingWarehouse.uuid,
+        warehouseDataForUpdate,
+      );
+
+      expect(warehouseRepository.save).toHaveBeenCalledWith(
+        expect.any(Warehouse),
+      );
+      expect(result).toEqual(updatedWarehouse);
+    });
+
+    it('Should throw an error if warehouse does not exist', async () => {
+      const warehouseDataForUpdate: WarehouseDTO = createWarehouseDTO();
+      warehouseDataForUpdate.name = 'Updated Name';
+
+      const uuid = faker.string.uuid();
+
+      mockFindOne(warehouseRepository, null);
+
+      await expect(
+        warehouseService.updateWarehouse(uuid, warehouseDataForUpdate),
+      ).rejects.toThrow(`Warehouse ${uuid} not found`);
+      expect(warehouseService.getRepository().findOne).toHaveBeenCalledWith({
+        where: { uuid },
+      });
     });
   });
 });
