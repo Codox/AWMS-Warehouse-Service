@@ -54,7 +54,7 @@ export function createCompanyDTO(): CompanyDTO {
     region: faker.location.state(),
     city: faker.location.city(),
     zipCode: faker.location.zipCode(),
-    country: faker.location.country(),
+    country: faker.location.countryCode(),
   };
 }
 
@@ -70,7 +70,7 @@ export function createWarehouseDTO(): WarehouseDTO {
     region: faker.location.state(),
     city: faker.location.city(),
     zipCode: faker.location.zipCode(),
-    country: faker.location.country(),
+    country: faker.location.countryCode(),
   };
 }
 
