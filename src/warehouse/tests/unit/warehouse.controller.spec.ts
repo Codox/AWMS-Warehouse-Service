@@ -12,6 +12,7 @@ import {
   createWarehouse,
   createWarehouseDTO,
   expectEventEmitted,
+  expectFindOneCalledWithUUID,
   expectResponseToBeCorrect,
   mockFindOne,
 } from '../../../shared/test/unit-test-utilities';
@@ -89,33 +90,24 @@ describe('WarehouseController', () => {
   });
 
   it('GET /warehouse/:uuid should resolve correctly - 200', async () => {
-    const warehouse = new Warehouse({
-      uuid: faker.string.uuid(),
-      name: faker.company.name(),
-      contactTelephone: faker.phone.number('+44##########'),
-
-      addressLines: [faker.location.streetAddress({ useFullAddress: true })],
-      town: faker.location.city(),
-      region: faker.location.state(),
-      city: faker.location.city(),
-      zipCode: faker.location.zipCode(),
-      country: faker.location.countryCode(),
-    });
+    const warehouse = createWarehouse();
 
     const baseResponse = {
       data: warehouse,
     };
 
-    jest
-      .spyOn(warehouseService.getRepository(), 'findOne')
-      .mockImplementation(async () => warehouse);
+    mockFindOne(warehouseService.getRepository(), warehouse);
 
     const result = await controller.getWarehouse(warehouse.uuid);
 
-    expect(result).toEqual(baseResponse);
-    expect(warehouseService.getRepository().findOne).toHaveBeenCalledWith({
-      where: { uuid: warehouse.uuid },
-    });
+    expectResponseToBeCorrect(
+      await controller.getWarehouse(warehouse.uuid),
+      warehouse,
+    );
+    expectFindOneCalledWithUUID(
+      warehouseService.getRepository(),
+      warehouse.uuid,
+    );
   });
 
   it('GET /company/:uuid should not resolve (Not found) - 404', async () => {
