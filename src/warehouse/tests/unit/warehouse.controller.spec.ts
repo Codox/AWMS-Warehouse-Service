@@ -92,13 +92,7 @@ describe('WarehouseController', () => {
   it('GET /warehouse/:uuid should resolve correctly - 200', async () => {
     const warehouse = createWarehouse();
 
-    const baseResponse = {
-      data: warehouse,
-    };
-
     mockFindOne(warehouseService.getRepository(), warehouse);
-
-    const result = await controller.getWarehouse(warehouse.uuid);
 
     expectResponseToBeCorrect(
       await controller.getWarehouse(warehouse.uuid),
