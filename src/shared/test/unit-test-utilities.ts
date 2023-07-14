@@ -4,8 +4,8 @@ import { KeycloakUser } from '../../user/keycloak-user';
 import { BaseRepository } from '../base.repository';
 import { FilterableData } from '../filterable-data';
 import { CompanyDTO } from '../../company/dto/company.dto';
-import { WarehouseDTO } from "../../warehouse/dto/warehouse.dto";
-import { Warehouse } from "../../warehouse/warehouse.entity";
+import { WarehouseDTO } from '../../warehouse/dto/warehouse.dto';
+import { Warehouse } from '../../warehouse/warehouse.entity';
 
 export function createCompany(): Company {
   return new Company({
