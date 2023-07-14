@@ -14,6 +14,7 @@ import {
   expectEndpointCalledSuccessfully,
 } from '../../../shared/test/e2e-test-utilities';
 import { ValidationPipe } from '@nestjs/common';
+import { createCompanyDTO } from "../../../shared/test/unit-test-utilities";
 
 function createValidCompany() {
   return new Company({
@@ -108,7 +109,7 @@ describe('CompanyController', () => {
   });
 
   it('POST /company should resolve correctly - 201', async () => {
-    const companyData = createValidCompany();
+    const companyData = createCompanyDTO();
 
     return app
       .inject({
@@ -121,7 +122,6 @@ describe('CompanyController', () => {
       })
       .then(async (result) => {
         expectEndpointCalledSuccessfully(result, 201);
-        expect(result.json().data.uuid).toEqual(companyData.uuid);
 
         const company = await companyService.getRepository().findOne({
           where: {
