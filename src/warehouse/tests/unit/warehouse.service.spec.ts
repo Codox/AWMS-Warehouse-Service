@@ -22,6 +22,7 @@ describe('WarehouseService', () => {
           provide: WarehouseRepository,
           useValue: {
             save: jest.fn(),
+            findOne: jest.fn(),
           },
         },
       ],
@@ -65,9 +66,10 @@ describe('WarehouseService', () => {
         warehouseDataForUpdate,
       );
 
-      expect(warehouseRepository.save).toHaveBeenCalledWith(
-        expect.any(Warehouse),
-      );
+      expect(warehouseRepository.save).toHaveBeenCalledWith({
+        ...existingWarehouse,
+        ...warehouseDataForUpdate,
+      });
       expect(result).toEqual(updatedWarehouse);
     });
 
