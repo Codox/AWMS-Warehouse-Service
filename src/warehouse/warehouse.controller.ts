@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
@@ -21,6 +22,7 @@ import { Warehouse } from './warehouse.entity';
 import { WarehouseDTO } from './dto/warehouse.dto';
 import { KeycloakUser } from '../user/keycloak-user';
 import { WarehouseCreatedEvent } from './events/warehouse-created.event';
+import { WarehouseUpdatedEvent } from './events/warehouse-updated.event';
 
 @Controller('warehouse')
 @ApiTags('warehouse')
@@ -113,6 +115,29 @@ export class WarehouseController {
     this.eventEmitter.emit(
       'warehouse.created',
       new WarehouseCreatedEvent({
+        warehouseUuid: warehouse.uuid,
+        userUuid: user.sub,
+      }),
+    );
+
+    return {
+      data: warehouse,
+    };
+  }
+
+  @Put('/:uuid')
+  @Roles({ roles: ['realm:super_admin'] })
+  @HttpCode(HttpStatus.OK)
+  async updateWarehouse(
+    @Param('uuid') uuid: string,
+    @Body() data: WarehouseDTO,
+    @AuthenticatedUser() user: KeycloakUser,
+  ): Promise<{ data: Warehouse }> {
+    const warehouse = await this.warehouseService.updateWarehouse(uuid, data);
+
+    this.eventEmitter.emit(
+      'warehouse.updated',
+      new WarehouseUpdatedEvent({
         warehouseUuid: warehouse.uuid,
         userUuid: user.sub,
       }),

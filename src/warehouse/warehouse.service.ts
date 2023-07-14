@@ -31,7 +31,7 @@ export class WarehouseService extends BaseService<Warehouse> {
       {},
       existingWarehouse,
       data,
-    ) as Warehouse;
+    );
 
     return await this.warehouseRepository.save(updatedWarehouse);
   }

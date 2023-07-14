@@ -7,6 +7,14 @@ import { faker } from '@faker-js/faker';
 import { FilterableData } from '../../../shared/filterable-data';
 import { KeycloakUser } from '../../../user/keycloak-user';
 import { WarehouseController } from '../../warehouse.controller';
+import {
+  createKeycloakUser,
+  createWarehouse,
+  createWarehouseDTO,
+  expectEventEmitted,
+  expectResponseToBeCorrect,
+  mockFindOne,
+} from '../../../shared/test/unit-test-utilities';
 
 describe('WarehouseController', () => {
   let controller: WarehouseController;
@@ -113,9 +121,7 @@ describe('WarehouseController', () => {
   it('GET /company/:uuid should not resolve (Not found) - 404', async () => {
     const uuid = faker.string.uuid();
 
-    jest
-      .spyOn(warehouseService.getRepository(), 'findOne')
-      .mockImplementation(async () => undefined);
+    mockFindOne(warehouseService.getRepository(), undefined);
 
     await expect(controller.getWarehouse(uuid)).rejects.toThrow(
       `Warehouse ${uuid} not found`,
@@ -126,23 +132,9 @@ describe('WarehouseController', () => {
   });
 
   it('POST /warehouse should resolve correctly - 201', async () => {
-    const warehouse = new Warehouse({
-      uuid: faker.string.uuid(),
-      name: faker.company.name(),
-      contactTelephone: faker.phone.number('+44##########'),
+    const warehouse = createWarehouse();
 
-      addressLines: [faker.location.streetAddress({ useFullAddress: true })],
-      town: faker.location.city(),
-      region: faker.location.state(),
-      city: faker.location.city(),
-      zipCode: faker.location.zipCode(),
-      country: faker.location.countryCode(),
-    });
-
-    const user: KeycloakUser = {
-      sub: faker.string.uuid(),
-      email: faker.internet.email(),
-    };
+    const user: KeycloakUser = createKeycloakUser();
 
     const baseResponse = {
       data: warehouse,
@@ -162,5 +154,54 @@ describe('WarehouseController', () => {
         userUuid: user.sub,
       }),
     );
+  });
+
+  it('PUT /warehouse/:uuid should resolve correctly - 200', async () => {
+    const existingWarehouse = createWarehouse();
+
+    const user: KeycloakUser = createKeycloakUser();
+
+    const updateData = createWarehouseDTO();
+    const updatedWarehouse = new Warehouse({
+      ...existingWarehouse,
+      ...updateData,
+    });
+
+    mockFindOne(warehouseService.getRepository(), existingWarehouse);
+
+    jest
+      .spyOn(warehouseService, 'updateWarehouse')
+      .mockImplementation(async () => updatedWarehouse);
+
+    expectResponseToBeCorrect(
+      await controller.updateWarehouse(
+        existingWarehouse.uuid,
+        updateData,
+        user,
+      ),
+      updatedWarehouse,
+    );
+
+    expectEventEmitted(eventEmitter, 'warehouse.updated', {
+      warehouseUuid: existingWarehouse.uuid,
+      userUuid: user.sub,
+    });
+  });
+
+  it('PUT /warehouse/:uuid should not resolve (Not found) - 404', async () => {
+    const uuid = faker.string.uuid();
+
+    mockFindOne(warehouseService.getRepository(), undefined);
+
+    await expect(
+      controller.updateWarehouse(
+        uuid,
+        createWarehouseDTO(),
+        createKeycloakUser(),
+      ),
+    ).rejects.toThrow(`Warehouse ${uuid} not found`);
+    expect(warehouseService.getRepository().findOne).toHaveBeenCalledWith({
+      where: { uuid },
+    });
   });
 });
