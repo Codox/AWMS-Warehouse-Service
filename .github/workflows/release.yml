@@ -46,4 +46,4 @@ jobs:
           context: .
           file: docker/Dockerfile.node.release
           push: true
-          tags: ${{ github.repository }}:${{ github.ref }}
+          tags: ${{ env.REGISTRY }}/codox/awms-warehouse-service:${{ github.ref }}
