@@ -1,0 +1,13 @@
+name: Run all tests on commit to feature/hotfix branch
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  unit-test:
+    uses: ./.github/workflows/unit-test.yml
+
+  e2e-test:
+    uses: ./.github/workflows/e2e-test.yml
