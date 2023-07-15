@@ -34,6 +34,10 @@ jobs:
           username: rexchoppers
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract tag name
+        id: extract_tag
+        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -46,4 +50,4 @@ jobs:
           context: .
           file: docker/Dockerfile.node.release
           push: true
-          tags: ${{ env.REGISTRY }}/codox/awms-warehouse-service:${{ github.ref }}
+          tags: ${{ env.REGISTRY }}/codox/awms-warehouse-service:${{ steps.extract_tag.outputs.tag }}
