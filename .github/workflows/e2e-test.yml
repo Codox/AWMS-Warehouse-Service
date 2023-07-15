@@ -6,7 +6,7 @@ on:
 jobs:
   test:
     name: Run E2E Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
