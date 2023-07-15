@@ -33,6 +33,7 @@ export class CreateCompaniesTable1672637865320 implements MigrationInterface {
           {
             name: 'description',
             type: 'text',
+            isNullable: true,
           },
           {
             name: 'vat_number',

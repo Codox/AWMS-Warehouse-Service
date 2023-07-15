@@ -1,5 +1,5 @@
 import { Mixin } from 'ts-mixer';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LocationDTO } from '../../warehouse-location/dto/location.dto';
 
@@ -12,6 +12,7 @@ export class CompanyDTO extends Mixin(LocationDTO) {
   name: string;
 
   @IsString()
+  @IsOptional()
   @ApiPropertyOptional({
     description: 'A description of the company',
   })
