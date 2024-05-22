@@ -1,4 +1,4 @@
-module AWMS-BE
+module awms-be
 
 go 1.20
 
