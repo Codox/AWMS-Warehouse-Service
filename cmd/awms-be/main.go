@@ -3,9 +3,9 @@ package main
 import (
 	"awms-be/internal/config"
 	"awms-be/internal/database"
-	"github.com/go-chi/chi/v5"
+	"awms-be/internal/routes"
+	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 )
 
 func main() {
@@ -18,10 +18,9 @@ func main() {
 	}
 	defer client.Disconnect(nil)
 
-	r := chi.NewRouter()
+	r := gin.Default()
 
-	log.Printf("Server listening on port %s", cfg.Port)
-	if err := http.ListenAndServe(":"+cfg.Port, r); err != nil {
-		log.Fatal(err)
-	}
+	routes.SetupRoutes(r, client)
+
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
