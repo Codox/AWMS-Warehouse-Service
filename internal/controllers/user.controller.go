@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"awms-be/internal/models"
 	"awms-be/internal/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -19,6 +20,10 @@ func (uc *UserController) GetAllUsers(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	if users == nil {
+		users = []models.User{}
 	}
 
 	c.JSON(http.StatusOK, users)

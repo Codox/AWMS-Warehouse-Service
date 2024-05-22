@@ -18,13 +18,13 @@ func NewUserService(client *mongo.Client) *UserService {
 }
 
 func (us *UserService) GetAllUsers() ([]models.User, error) {
+	var users []models.User // Ensure users is always initialized
 	cursor, err := us.collection.Find(context.TODO(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(context.TODO())
 
-	var users []models.User
 	for cursor.Next(context.TODO()) {
 		var user models.User
 		if err := cursor.Decode(&user); err != nil {
