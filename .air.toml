@@ -1,0 +1,27 @@
+root = "."
+tmp_dir = "tmp"
+[build]
+  bin = "tmp/main"
+  cmd = "go build -o tmp/main ./cmd/awms-be"
+  full_bin = "APP_ENV=dev PORT=8000 tmp/main"
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  exclude_dir = ["assets", "tmp", "vendor", "backend/mocks"]
+  exclude_file = ["go.sum"]
+  watch_delay = 200
+  build_delay = 200
+  exclude_regex = ["_test.go"]
+  follow_symlink = true
+  copy_metadata = true
+  prebuild = "echo 'prebuild!'"
+  include_all = false
+
+[log]
+  color = true
+  timestamp = false
+  highlight = true
+
+[settings]
+  exclude_unchanged = true
+  [settings.show]
+    log_lines = 10
+    path = true

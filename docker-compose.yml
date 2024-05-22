@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    image: golang:1.18
+    container_name: awms-be
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/awms-be
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/go/src/awms-be
+    working_dir: /go/src/awms-be
+    command: ["go", "run", "./cmd/awms-be/main.go"]
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
