@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - MONGO_URI=mongodb://mongo:27017/awms-be
+      - MONGO_URI=mongodb://awms-be:awms-be@mongo:27017/awms-be?authSource=admin
       - PORT=8000
     ports:
       - "8000:8000"
@@ -29,6 +29,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
       - mongo-data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
 
 volumes:
   mongo-data:

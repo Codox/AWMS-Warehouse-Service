@@ -9,7 +9,7 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		MongoURI: GetEnv("MONGO_URI", "mongodb://localhost:27017"),
+		MongoURI: GetEnv("MONGO_URI", "mongodb://admin:admin@localhost:27017"),
 		Port:     GetEnv("PORT", "8000"),
 	}
 }
