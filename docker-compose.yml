@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: golang:1.18
+    image: golang:1.19
     container_name: awms-be
     build:
       context: .
@@ -29,7 +29,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
   postgres-data:
