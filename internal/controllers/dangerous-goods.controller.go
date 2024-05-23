@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"awms-be/internal/errors"
 	"awms-be/internal/services"
+	"awms-be/internal/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,5 +22,16 @@ func (dgc *DangerousGoodsController) GetDangerousGoods(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	c.JSON(http.StatusOK, dangerousGoods)
+}
+
+func (dgc *DangerousGoodsController) GetDangerousGoodsByUuid(c *gin.Context) {
+	uuid := c.Param("uuid")
+	dangerousGoods, err := dgc.dangerousGoodsService.GetDangerousGoodsByUuid(uuid)
+	if err != nil {
+		utils.HandleHTTPError(c, errors.DangerousGoodsNotFoundError(uuid))
+		return
+	}
+
 	c.JSON(http.StatusOK, dangerousGoods)
 }

@@ -22,3 +22,13 @@ func (dgs *DangerousGoodsService) GetDangerousGoods() ([]models.DangerousGoods, 
 	}
 	return dangerousGoods, nil
 }
+
+func (dgs *DangerousGoodsService) GetDangerousGoodsByUuid(uuid string) (*models.DangerousGoods, error) {
+	var dangerousGoods models.DangerousGoods // Ensure dangerousGoods is always initialized
+
+	err := dgs.db.Preload("Classifications").Where("uuid = ?", uuid).First(&dangerousGoods).Error
+	if err != nil {
+		return nil, err
+	}
+	return &dangerousGoods, nil
+}

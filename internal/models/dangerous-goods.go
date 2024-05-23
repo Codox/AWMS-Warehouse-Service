@@ -5,8 +5,8 @@ import (
 )
 
 type DangerousGoods struct {
-	ID              uint                           `gorm:"primaryKey"`
-	UUID            string                         `gorm:"type:uuid;default:uuid_generate_v4();unique"`
+	ID              uint                           `gorm:"primaryKey" json:"-"`
+	UUID            string                         `gorm:"type:uuid;default:uuid_generate_v4();unique" json:"uuid"`
 	UnClass         string                         `json:"un_class"`
 	DangerousGoods  string                         `json:"dangerous_goods"`
 	CreatedAt       time.Time                      `json:"created_at"`
@@ -15,11 +15,11 @@ type DangerousGoods struct {
 }
 
 type DangerousGoodsClassification struct {
-	ID               uint      `gorm:"primaryKey"`
-	UUID             string    `gorm:"type:uuid;default:uuid_generate_v4();unique"`
+	ID               uint      `gorm:"primaryKey" json:"-"`
+	UUID             string    `gorm:"type:uuid;default:uuid_generate_v4();unique" json:"uuid"`
 	Division         string    `json:"division"`
 	Classification   string    `json:"classification"`
-	DangerousGoodsID uint      `json:"dangerous_goods_id"`
+	DangerousGoodsID uint      `json:"-"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 }
