@@ -4,12 +4,14 @@ import (
 	"awms-be/internal/controllers"
 	"awms-be/internal/services"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"gorm.io/gorm"
 )
 
-func SetupRoutes(router *gin.Engine, pool *pgxpool.Pool) {
-	userService := services.NewUserService(pool)
-	userController := controllers.NewUserController(userService)
+func SetupRoutes(router *gin.Engine, db *gorm.DB) {
+	// userService := services.NewUserService(pool)
+	dangerousGoodsService := services.NewDangerousGoodsService(db)
+	dangerousGoodsController := controllers.NewDangerousGoodsController(dangerousGoodsService)
+	// userController := controllers.NewUserController(userService)
 
-	router.GET("/users", userController.GetAllUsers)
+	router.GET("/dangerous-goods", dangerousGoodsController.GetDangerousGoods)
 }

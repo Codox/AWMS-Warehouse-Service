@@ -2,6 +2,7 @@ package main
 
 import (
 	"awms-be/internal/config"
+	"awms-be/internal/routes"
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-migrate/migrate/v4"
@@ -23,7 +24,7 @@ func main() {
 	db, err := gorm.Open(gormPg.Open(cfg.PostgresURI), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
+			SingularTable: false,
 		},
 	})
 
@@ -44,7 +45,7 @@ func main() {
 
 	r := gin.Default()
 
-	// routes.SetupRoutes(r, pool)
+	routes.SetupRoutes(r, db)
 
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
