@@ -35,3 +35,14 @@ func (dgc *DangerousGoodsController) GetDangerousGoodsByUuid(c *gin.Context) {
 
 	c.JSON(http.StatusOK, dangerousGoods)
 }
+
+func (dgc *DangerousGoodsController) GetDangerousGoodsClassificationsByUuid(c *gin.Context) {
+	uuid := c.Param("uuid")
+	dangerousGoods, err := dgc.dangerousGoodsService.GetDangerousGoodsByUuid(uuid)
+	if err != nil {
+		utils.HandleHTTPError(c, errors.DangerousGoodsNotFoundError(uuid))
+		return
+	}
+
+	c.JSON(http.StatusOK, dangerousGoods.Classifications)
+}

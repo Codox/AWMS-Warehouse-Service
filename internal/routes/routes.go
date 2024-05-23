@@ -14,4 +14,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	// userController := controllers.NewUserController(userService)
 
 	router.GET("/dangerous-goods", dangerousGoodsController.GetDangerousGoods)
+	router.GET("/dangerous-goods/:uuid", dangerousGoodsController.GetDangerousGoodsByUuid)
+	router.GET("/dangerous-goods/:uuid/classifications", dangerousGoodsController.GetDangerousGoodsClassificationsByUuid)
+
 }
