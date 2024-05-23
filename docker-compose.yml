@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - MONGO_URI=mongodb://awms-be:awms-be@mongo:27017/awms-be?authSource=admin
+      - POSTGRES_URL=postgres://awms:awms@postgres:5432/awms?sslmode=disable
       - PORT=8000
     ports:
       - "8000:8000"
@@ -17,19 +17,19 @@ services:
     working_dir: /go/src/awms-be
     command: ["go", "run", "./cmd/awms-be/main.go"]
     depends_on:
-      - mongo
+      - postgres
 
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    ports:
-      - "27017:27017"
+  postgres:
+    image: postgres:16
+    container_name: postgres
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
+      POSTGRES_DB: awms
+      POSTGRES_USER: awms
+      POSTGRES_PASSWORD: awms
+    ports:
+      - "5432:5432"
     volumes:
-      - mongo-data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+      - db-data:/var/lib/postgresql/data
 
 volumes:
-  mongo-data:
+  postgres-data:

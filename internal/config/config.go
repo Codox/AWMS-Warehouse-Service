@@ -3,14 +3,14 @@ package config
 import "os"
 
 type Config struct {
-	MongoURI string
-	Port     string
+	PostgresURI string
+	Port        string
 }
 
 func Load() *Config {
 	return &Config{
-		MongoURI: GetEnv("MONGO_URI", "mongodb://admin:admin@localhost:27017"),
-		Port:     GetEnv("PORT", "8000"),
+		PostgresURI: GetEnv("POSTGRES_URI", "postgres://awms:awms@postgres:5432/awms?sslmode=disable"),
+		Port:        GetEnv("PORT", "8000"),
 	}
 }
 
