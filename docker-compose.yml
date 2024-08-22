@@ -2,13 +2,12 @@ version: '3.8'
 
 services:
   app:
-    image: golang:1.19
     container_name: awms-be
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-      - POSTGRES_URL=postgres://awms:awms@postgres:5432/awms?sslmode=disable
+      - MONGO_URI=mongodb://mongo:27017/awms
       - PORT=8000
     ports:
       - "8000:8000"
@@ -17,19 +16,41 @@ services:
     working_dir: /go/src/awms-be
     command: ["go", "run", "./cmd/awms-be/main.go"]
     depends_on:
-      - postgres
+      - mongo
 
-  postgres:
-    image: postgres:16
-    container_name: postgres
+  keycloak-postgres:
+    image: postgres:latest
     environment:
-      POSTGRES_DB: awms
-      POSTGRES_USER: awms
-      POSTGRES_PASSWORD: awms
-    ports:
-      - "5432:5432"
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=keycloak
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - keycloak-postgres-data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      - DB_VENDOR=postgres
+      - DB_ADDR=postgres
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=keycloak
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=keycloak
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    command:
+      - start-dev
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
 
 volumes:
-  postgres-data:
+  mongo-data:
+  keycloak-postgres-data:
