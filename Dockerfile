@@ -1,4 +1,5 @@
-FROM golang:1.18
+FROM golang:1.22-alpine
+
 
 WORKDIR /go/src/awms-be
 
