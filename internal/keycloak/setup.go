@@ -34,10 +34,21 @@ func SetupKeycloak(config KeycloakConfig) {
 	realmExists := false
 
 	for _, r := range existingRealms {
-		if r.Realm == config.RealmName {
+		if r.Realm != nil && *r.Realm == config.RealmName {
 			realmExists = true
 			break
 		}
+	}
+
+	// If the Realm doesn't exist, create it
+	if !realmExists {
+		realm := gocloak.RealmRepresentation{
+			Realm:   &config.RealmName,
+			Enabled: gocloak.BoolP(true),
+		}
+
+		_, err = client.CreateRealm(ctx, token.AccessToken, realm)
+
 	}
 
 }
