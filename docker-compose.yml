@@ -17,6 +17,7 @@ services:
     command: ["go", "run", "./cmd/awms-be/main.go"]
     depends_on:
       - mongo
+      - keycloak
 
   keycloak-postgres:
     image: postgres:latest
