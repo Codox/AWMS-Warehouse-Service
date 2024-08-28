@@ -37,6 +37,8 @@ services:
       - DB_PASSWORD=keycloak
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=keycloak
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
     ports:
       - "8080:8080"
     depends_on:
