@@ -20,38 +20,47 @@ func SetupKeycloak(config Config) {
 
 	client := gocloak.NewClient(config.ServerURL)
 
-	token, err := client.LoginAdmin(ctx, config.AdminUsername, config.AdminPassword, "master")
+	fmt.Println("Keycloak client created successfully.")
+	fmt.Println("Admin username: ", config.AdminUsername)
+	fmt.Println("Admin password: ", config.AdminPassword)
+	fmt.Println("Server URL: ", config.ServerURL)
+	fmt.Println("Realm name: ", config.RealmName)
+	fmt.Println("Client ID: ", config.ClientID)
+
+	_, err := client.LoginAdmin(ctx, config.AdminUsername, config.AdminPassword, "master")
 
 	if err != nil {
 		log.Fatalf("Keycloak authentication failed: %v", err)
+
 	}
 
-	// Check if the configured Realm exists
-	existingRealms, err := client.GetRealms(ctx, token.AccessToken)
-	if err != nil {
-		log.Fatalf("Error fetching realms: %v", err)
-	}
-
-	realmExists := false
-
-	for _, r := range existingRealms {
-		if r.Realm != nil && *r.Realm == config.RealmName {
-			realmExists = true
-			break
-		}
-	}
-
-	// If the Realm doesn't exist, create it
-	if !realmExists {
-		realm := gocloak.RealmRepresentation{
-			Realm:   &config.RealmName,
-			Enabled: gocloak.BoolP(true),
+	/*
+		// Check if the configured Realm exists
+		existingRealms, err := client.GetRealms(ctx, token.AccessToken)
+		if err != nil {
+			log.Fatalf("Error fetching realms: %v", err)
 		}
 
-		_, err = client.CreateRealm(ctx, token.AccessToken, realm)
+		realmExists := false
 
-		fmt.Println("Realm created successfully.")
+		for _, r := range existingRealms {
+			if r.Realm != nil && *r.Realm == config.RealmName {
+				realmExists = true
+				break
+			}
+		}
 
-	}
+		// If the Realm doesn't exist, create it
+		if !realmExists {
+			realm := gocloak.RealmRepresentation{
+				Realm:   &config.RealmName,
+				Enabled: gocloak.BoolP(true),
+			}
+
+			_, err = client.CreateRealm(ctx, token.AccessToken, realm)
+
+			fmt.Println("Realm created successfully.")
+
+		}*/
 
 }

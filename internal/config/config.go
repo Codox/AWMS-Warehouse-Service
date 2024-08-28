@@ -19,7 +19,7 @@ func Load() *Config {
 
 		KeycloakAdminUsername: GetEnv("KEYCLOAK_ADMIN_USERNAME", "admin"),
 		KeycloakAdminPassword: GetEnv("KEYCLOAK_ADMIN_PASSWORD", "admin"),
-		KeycloakServerURL:     GetEnv("KEYCLOAK_SERVER_URL", "http://localhost:8080/auth"),
+		KeycloakServerURL:     GetEnv("KEYCLOAK_SERVER_URL", "http://keycloak:8080"),
 		KeycloakRealmName:     GetEnv("KEYCLOAK_REALM_NAME", "awms"),
 		KeycloakClientID:      GetEnv("KEYCLOAK_CLIENT_ID", "awms"),
 	}

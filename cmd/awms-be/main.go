@@ -9,10 +9,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	gormPg "gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
 	"log"
 )
 
@@ -28,29 +25,29 @@ func main() {
 		RealmName:     cfg.KeycloakRealmName,
 		ClientID:      cfg.KeycloakClientID,
 	})
+	/*
+		// Connect to Postgres
+		db, err := gorm.Open(gormPg.Open(cfg.PostgresURI), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info),
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: false,
+			},
+		})
 
-	// Connect to Postgres
-	db, err := gorm.Open(gormPg.Open(cfg.PostgresURI), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-		NamingStrategy: schema.NamingStrategy{
-			SingularTable: false,
-		},
-	})
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-	if err != nil {
-		log.Fatalln(err)
-	}
+		sqlDB, err := db.DB()
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatalln(err)
-	}
+		log.Printf("Running migrations - before")
 
-	log.Printf("Running migrations - before")
+		runMigrations(sqlDB)
 
-	runMigrations(sqlDB)
-
-	log.Printf("Running migrations - after")
+		log.Printf("Running migrations - after")*/
 
 	r := gin.Default()
 
