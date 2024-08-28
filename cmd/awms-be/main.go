@@ -2,6 +2,7 @@ package main
 
 import (
 	"awms-be/internal/config"
+	"awms-be/internal/keycloak"
 	"awms-be/internal/routes"
 	"database/sql"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,14 @@ var db *gorm.DB
 
 func main() {
 	cfg := config.Load()
+
+	keycloak.SetupKeycloak(keycloak.Config{
+		AdminUsername: cfg.KeycloakAdminUsername,
+		AdminPassword: cfg.KeycloakAdminPassword,
+		ServerURL:     cfg.KeycloakServerURL,
+		RealmName:     cfg.KeycloakRealmName,
+		ClientID:      cfg.KeycloakClientID,
+	})
 
 	// Connect to Postgres
 	db, err := gorm.Open(gormPg.Open(cfg.PostgresURI), &gorm.Config{

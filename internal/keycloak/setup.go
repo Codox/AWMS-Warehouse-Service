@@ -2,11 +2,12 @@ package keycloak
 
 import (
 	"context"
+	"fmt"
 	"github.com/Nerzal/gocloak/v13"
 	"log"
 )
 
-type KeycloakConfig struct {
+type Config struct {
 	AdminUsername string
 	AdminPassword string
 	ServerURL     string
@@ -14,7 +15,7 @@ type KeycloakConfig struct {
 	ClientID      string
 }
 
-func SetupKeycloak(config KeycloakConfig) {
+func SetupKeycloak(config Config) {
 	ctx := context.Background()
 
 	client := gocloak.NewClient(config.ServerURL)
@@ -48,6 +49,8 @@ func SetupKeycloak(config KeycloakConfig) {
 		}
 
 		_, err = client.CreateRealm(ctx, token.AccessToken, realm)
+
+		fmt.Println("Realm created successfully.")
 
 	}
 
