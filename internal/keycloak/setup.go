@@ -34,6 +34,41 @@ func SetupKeycloak(config Config) {
 
 	}
 
+	// Get token
+	token, err := client.LoginAdmin(ctx, config.AdminUsername, config.AdminPassword, "master")
+	if err != nil {
+		log.Fatalf("Keycloak authentication failed: %v", err)
+	}
+
+	fmt.Println("Keycloak authentication successful.")
+
+	// Check for AWMS realm
+	existingRealms, err := client.GetRealms(ctx, token.AccessToken)
+	if err != nil {
+		log.Fatalf("Error fetching realms: %v", err)
+	}
+
+	realmExists := false
+
+	for _, r := range existingRealms {
+		if r.Realm != nil && *r.Realm == config.RealmName {
+			realmExists = true
+			break
+		}
+	}
+
+	// If the Realm doesn't exist, create it
+	if !realmExists {
+		realm := gocloak.RealmRepresentation{
+			Realm:   &config.RealmName,
+			Enabled: gocloak.BoolP(true),
+		}
+
+		_, err = client.CreateRealm(ctx, token.AccessToken, realm)
+
+		fmt.Printf("Realm %s created successfully.", config.RealmName)
+	}
+
 	/*
 		// Check if the configured Realm exists
 		existingRealms, err := client.GetRealms(ctx, token.AccessToken)
