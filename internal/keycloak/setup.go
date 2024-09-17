@@ -43,19 +43,7 @@ func SetupKeycloak(config Config) {
 	fmt.Println("Keycloak authentication successful.")
 
 	// Check for AWMS realm
-	existingRealms, err := client.GetRealms(ctx, token.AccessToken)
-	if err != nil {
-		log.Fatalf("Error fetching realms: %v", err)
-	}
-
-	realmExists := false
-
-	for _, r := range existingRealms {
-		if r.Realm != nil && *r.Realm == config.RealmName {
-			realmExists = true
-			break
-		}
-	}
+	realmExists := CheckRealmExists(ctx, client, token, config.RealmName)
 
 	// If the Realm doesn't exist, create it
 	if !realmExists {
@@ -98,4 +86,22 @@ func SetupKeycloak(config Config) {
 
 		}*/
 
+}
+
+func CheckRealmExists(ctx context.Context, client *gocloak.GoCloak, token *gocloak.JWT, realmName string) bool {
+	existingRealms, err := client.GetRealms(ctx, token.AccessToken)
+	if err != nil {
+		log.Fatalf("Error fetching realms: %v", err)
+	}
+
+	realmExists := false
+
+	for _, r := range existingRealms {
+		if r.Realm != nil && *r.Realm == realmName {
+			realmExists = true
+			break
+		}
+	}
+
+	return realmExists
 }
