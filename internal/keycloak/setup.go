@@ -88,6 +88,48 @@ func SetupKeycloak(config Config) {
 
 }
 
+func CreateAPIAdminClient(ctx context.Context, client *gocloak.GoCloak, token *gocloak.JWT, realmName string, clientID string) {
+	// Check for API Admin client
+	clientExists := CheckClientExists(ctx, client, token, realmName, clientID)
+
+	// If the client doesn't exist, create it
+	if !clientExists {
+		client := gocloak.Client{
+			ClientID: &clientID,
+		}
+
+		_, err := client.CreateClient(ctx, token.AccessToken, realmName, client)
+
+		if err != nil {
+			log.Fatalf("Error creating client: %v", err)
+		}
+
+		fmt.Printf("Client %s created successfully.", clientID)
+	}
+
+}
+
+func CheckClientExists(ctx context.Context, client *gocloak.GoCloak, token *gocloak.JWT, realmName string, clientID string) bool {
+	existingClients, err := client.GetClients(ctx, token.AccessToken, realmName, gocloak.GetClientsParams{
+		ClientID: &clientID,
+	})
+
+	if err != nil {
+		log.Fatalf("Error fetching clients: %v", err)
+	}
+
+	clientExists := false
+
+	for _, c := range existingClients {
+		if c.ClientID != nil && *c.ClientID == clientID {
+			clientExists = true
+			break
+		}
+	}
+
+	return clientExists
+}
+
 func CheckRealmExists(ctx context.Context, client *gocloak.GoCloak, token *gocloak.JWT, realmName string) bool {
 	existingRealms, err := client.GetRealms(ctx, token.AccessToken)
 	if err != nil {

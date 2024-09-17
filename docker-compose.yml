@@ -9,6 +9,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017/awms
       - PORT=8000
+      - ENVIRONMENT=local # Production, Local
     ports:
       - "8000:8000"
     volumes:
